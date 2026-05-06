@@ -1,33 +1,39 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using LibreHardwareMonitor.Hardware;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LibreHardwareMonitor.Hardware;
+using System.Windows.Threading;
 
 namespace hwmonitor
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<float> _cpuLoadTotal = new();
+        public ISeries[] Series { get; set; }
+        public Axis[] XAxes { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 60 }
+        };
+        public Axis[] YAxes { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 100 }
+        };
+
+        private DispatcherTimer _timer;
+        private const int MaxPoints = 60;
+
         Computer computer = new Computer
         {
             IsCpuEnabled = true,
             IsGpuEnabled = true,
             IsMemoryEnabled = true,
         };
-        
+
         private void getMetrics()
         {
-            var allowedSensorTypes = new[] { SensorType.Load, SensorType.Temperature, SensorType.Data, SensorType.SmallData, SensorType.Power};
+            var allowedSensorTypes = new[] { SensorType.Load, SensorType.Temperature, SensorType.Data, SensorType.SmallData, SensorType.Power };
             var allowedHardwareTypes = new[] { HardwareType.Cpu, HardwareType.GpuAmd, HardwareType.Memory };
 
             float cpuLoadTotal = 0;
@@ -87,7 +93,7 @@ namespace hwmonitor
                                 if (sensor.SensorType == SensorType.Load)
                                     gpuCoreLoad = sensor.Value.Value;
                                 if (sensor.SensorType == SensorType.Temperature)
-                                    gpuCoreTemp = sensor.Value.Value; 
+                                    gpuCoreTemp = sensor.Value.Value;
                                 break;
                             case "GPU Memory":
                                 if (sensor.SensorType == SensorType.Load) gpuMemoryLoad = sensor.Value.Value;
@@ -99,7 +105,6 @@ namespace hwmonitor
                             case "GPU Memory Free": gpuMemoryFreeMB = sensor.Value.Value; break;
                         }
                     }
-
 
                 else if (hardware.HardwareType == HardwareType.Memory)
                     foreach (ISensor sensor in hardware.Sensors)
@@ -115,38 +120,56 @@ namespace hwmonitor
                         }
                     }
             }
-
-            Debug.WriteLine($"=== CPU ===");
-            Debug.WriteLine($"  Total Load:    {cpuLoadTotal:F1}%");
-            Debug.WriteLine($"  Max Core Load: {cpuMaxCoreLoad:F1}%");
-            Debug.WriteLine($"  Temperature:   {cpuTemp:F1}°C");
-            Debug.WriteLine($"  Power:         {cpuPower:F1}W");
-
-            Debug.WriteLine($"\n=== Memory ===");
-            Debug.WriteLine($"  Used:          {ramUsedGB:F1} GB");
-            Debug.WriteLine($"  Available:     {ramAvailGB:F1} GB");
-            Debug.WriteLine($"  Load:          {ramUsedPercentage:F1}%");
-
-            Debug.WriteLine($"\n=== GPU ===");
-            Debug.WriteLine($"  Core Load:     {gpuCoreLoad:F1}%");
-            Debug.WriteLine($"  Memory Load:   {gpuMemoryLoad:F1}%");
-            Debug.WriteLine($"  Core Temp:     {gpuCoreTemp:F1}°C");
-            Debug.WriteLine($"  Memory Temp:   {gpuMemoryTemp:F1}°C");
-            Debug.WriteLine($"  Hotspot Temp:  {gpuHotspotTemp:F1}°C");
-            Debug.WriteLine($"  Power:         {gpuPower:F1}W");
-            Debug.WriteLine($"  Memory Used:   {gpuMemoryUsedMB:F0} MB");
-            Debug.WriteLine($"  Memory Free:   {gpuMemoryFreeMB:F0} MB");
         }
-        
+
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+
+            Series = new ISeries[]
+            {
+                new LineSeries<float>
+                {
+                    Values = _cpuLoadTotal,
+                    Name = "CPU Total",
+                    Fill = null,
+                    GeometrySize = 0,
+                }
+            };
             computer.Open();
-            getMetrics();
-            computer.Close();
+
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _timer.Tick += (s, e) => UpdateMetrics();
+            _timer.Start();
+
         }
+        private void UpdateMetrics()
+        {
+            foreach (IHardware hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType != HardwareType.Cpu) continue;
+
+                hardware.Update();
+
+                foreach (ISensor sensor in hardware.Sensors)
+                {
+                    if (sensor.Name == "CPU Total" && sensor.Value.HasValue)
+                    {
+                        _cpuLoadTotal.Add(sensor.Value.Value);
+
+                        if (_cpuLoadTotal.Count > MaxPoints)
+                            _cpuLoadTotal.RemoveAt(0);
+                    }
+                }
+            }
 
 
+
+        }
     }
 }
