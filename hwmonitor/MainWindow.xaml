@@ -6,10 +6,51 @@
         xmlns:local="clr-namespace:hwmonitor"
         xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="900" Width="1600"
+        Background="Black">
+
 
 
     <Grid>
-        <lvc:CartesianChart Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <TextBlock Text="CPU Load" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding CpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <TextBlock Text="CPU Temp / Power" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding CpuTempPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <TextBlock Text="GPU Load" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding GpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="GPU Temp" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding GpuTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="0">
+            <TextBlock Text="GPU Power" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding GpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to300Watts}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1">
+            <TextBlock Text="RAM Usage" HorizontalAlignment="Center" Foreground="White"/>
+            <lvc:CartesianChart Height="200" Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+        </StackPanel>
+
     </Grid>
 </Window>

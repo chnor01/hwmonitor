@@ -1,6 +1,8 @@
 ﻿using LibreHardwareMonitor.Hardware;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
@@ -11,15 +13,38 @@ namespace hwmonitor
     public partial class MainWindow : Window
     {
         private ObservableCollection<float> _cpuLoadTotal = new();
-        public ISeries[] Series { get; set; }
+        private ObservableCollection<float> _cpuTemp = new();
+        private ObservableCollection<float> _cpuPower = new();
+        private ObservableCollection<float> _gpuCoreLoad = new();
+        private ObservableCollection<float> _gpuCoreTemp = new();
+        private ObservableCollection<float> _gpuMemoryUsed = new();
+        private ObservableCollection<float> _gpuMemoryTemp = new();
+        private ObservableCollection<float> _gpuHotspotTemp = new();
+        private ObservableCollection<float> _gpuPower = new();
+        private ObservableCollection<float> _ramUsedPercentage = new();
+        public ISeries[] CpuLoadSeries { get; set; }
+        public ISeries[] CpuTempPowerSeries { get; set; }
+        public ISeries[] GpuLoadSeries { get; set; }
+        public ISeries[] GpuTempSeries { get; set; }
+        public ISeries[] GpuPowerSeries { get; set; }
+        public ISeries[] RamSeries { get; set; }
         public Axis[] XAxes { get; set; } = new Axis[]
         {
-            new Axis { MinLimit = 0, MaxLimit = 60 }
+            new Axis { MinLimit = 0, MaxLimit = 60, Labeler = value => $"{value}s", ForceStepToMin = true, MinStep = 10 }
         };
-        public Axis[] YAxes { get; set; } = new Axis[]
+        public Axis[] YAxes0to100Percent { get; set; } = new Axis[]
         {
-            new Axis { MinLimit = 0, MaxLimit = 100 }
+            new Axis { MinLimit = 0, MaxLimit = 100, Labeler = value => $"{value}%", ForceStepToMin = true, MinStep = 25 }
         };
+        public Axis[] YAxes0to150Temp { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 150, Labeler = value => $"{value}°C", ForceStepToMin = true, MinStep = 50 }
+        };
+        public Axis[] YAxes0to300Watts { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 300, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 100 }
+        };
+
 
         private DispatcherTimer _timer;
         private const int MaxPoints = 60;
@@ -31,113 +56,45 @@ namespace hwmonitor
             IsMemoryEnabled = true,
         };
 
-        private void getMetrics()
-        {
-            var allowedSensorTypes = new[] { SensorType.Load, SensorType.Temperature, SensorType.Data, SensorType.SmallData, SensorType.Power };
-            var allowedHardwareTypes = new[] { HardwareType.Cpu, HardwareType.GpuAmd, HardwareType.Memory };
-
-            float cpuLoadTotal = 0;
-            float cpuMaxCoreLoad = 0;
-            float cpuTemp = 0;
-            float cpuPower = 0;
-
-            float ramUsedGB = 0;
-            float ramAvailGB = 0;
-            float ramUsedPercentage = 0;
-
-            float gpuCoreLoad = 0;
-            float gpuMemoryLoad = 0;
-            float gpuCoreTemp = 0;
-            float gpuMemoryTemp = 0;
-            float gpuHotspotTemp = 0;
-            float gpuPower = 0;
-            float gpuMemoryUsedMB = 0;
-            float gpuMemoryFreeMB = 0;
-
-
-            foreach (IHardware hardware in computer.Hardware)
-            {
-                if (hardware.Name.Contains("Virtual") || hardware.Name.Contains("Graphics"))
-                    continue;
-
-                if (!allowedHardwareTypes.Contains(hardware.HardwareType))
-                    continue;
-
-                hardware.Update();
-
-                Debug.WriteLine($"\n{hardware.HardwareType}: {hardware.Name}");
-
-
-                if (hardware.HardwareType == HardwareType.Cpu)
-                    foreach (ISensor sensor in hardware.Sensors)
-                    {
-                        if (!sensor.Value.HasValue) continue;
-
-                        switch (sensor.Name)
-                        {
-                            case "CPU Total": cpuLoadTotal = sensor.Value.Value; break;
-                            case "CPU Core Max": cpuMaxCoreLoad = sensor.Value.Value; break;
-                            case "Core (Tctl/Tdie)": cpuTemp = sensor.Value.Value; break;
-                            case "Package": cpuPower = sensor.Value.Value; break;
-                        }
-                    }
-
-                else if (hardware.HardwareType == HardwareType.GpuAmd)
-                    foreach (ISensor sensor in hardware.Sensors)
-                    {
-                        if (!sensor.Value.HasValue) continue;
-
-                        switch (sensor.Name)
-                        {
-                            case "GPU Core":
-                                if (sensor.SensorType == SensorType.Load)
-                                    gpuCoreLoad = sensor.Value.Value;
-                                if (sensor.SensorType == SensorType.Temperature)
-                                    gpuCoreTemp = sensor.Value.Value;
-                                break;
-                            case "GPU Memory":
-                                if (sensor.SensorType == SensorType.Load) gpuMemoryLoad = sensor.Value.Value;
-                                if (sensor.SensorType == SensorType.Temperature) gpuMemoryTemp = sensor.Value.Value;
-                                break;
-                            case "GPU Hot Spot": gpuHotspotTemp = sensor.Value.Value; break;
-                            case "GPU Package": gpuPower = sensor.Value.Value; break;
-                            case "GPU Memory Used": gpuMemoryUsedMB = sensor.Value.Value; break;
-                            case "GPU Memory Free": gpuMemoryFreeMB = sensor.Value.Value; break;
-                        }
-                    }
-
-                else if (hardware.HardwareType == HardwareType.Memory)
-                    foreach (ISensor sensor in hardware.Sensors)
-                    {
-                        if (!sensor.Value.HasValue) continue;
-
-                        switch (sensor.Name)
-                        {
-                            case "Memory Used": ramUsedGB = sensor.Value.Value; break;
-                            case "Memory Available": ramAvailGB = sensor.Value.Value; break;
-                            case "Memory": ramUsedPercentage = sensor.Value.Value; break;
-
-                        }
-                    }
-            }
-        }
-
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
-            Series = new ISeries[]
-            {
-                new LineSeries<float>
-                {
-                    Values = _cpuLoadTotal,
-                    Name = "CPU Total",
-                    Fill = null,
-                    GeometrySize = 0,
-                }
+            CpuLoadSeries = new ISeries[]
+            { 
+                new LineSeries<float> { Values = _cpuLoadTotal, Name = "CPU Total", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 }
             };
+
+            CpuTempPowerSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _cpuTemp, Name = "CPU Temp °C", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 },
+                new LineSeries<float> { Values = _cpuPower, Name = "CPU Power W", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 },
+            };
+
+            GpuLoadSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _gpuCoreLoad, Name = "GPU Core Load %", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 }
+            };
+
+            GpuTempSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _gpuCoreTemp,    Name = "GPU Core °C",    Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(150)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  },
+                new LineSeries<float> { Values = _gpuMemoryTemp,  Name = "GPU Memory °C",  Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  },
+                new LineSeries<float> { Values = _gpuHotspotTemp, Name = "GPU Hotspot °C", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(90)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+            };
+            
+            GpuPowerSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _gpuPower, Name = "GPU Power W", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+            };
+            
+            RamSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _ramUsedPercentage, Name = "RAM %", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 }
+            };
+
             computer.Open();
 
             _timer = new DispatcherTimer
@@ -152,24 +109,66 @@ namespace hwmonitor
         {
             foreach (IHardware hardware in computer.Hardware)
             {
-                if (hardware.HardwareType != HardwareType.Cpu) continue;
+                if (hardware.Name.Contains("Virtual") || hardware.Name.Contains("Graphics"))
+                    continue;
 
                 hardware.Update();
 
-                foreach (ISensor sensor in hardware.Sensors)
-                {
-                    if (sensor.Name == "CPU Total" && sensor.Value.HasValue)
+
+                if (hardware.HardwareType == HardwareType.Cpu)
+                    foreach (ISensor sensor in hardware.Sensors)
                     {
-                        _cpuLoadTotal.Add(sensor.Value.Value);
+                        if (!sensor.Value.HasValue) continue;
 
-                        if (_cpuLoadTotal.Count > MaxPoints)
-                            _cpuLoadTotal.RemoveAt(0);
+                        switch (sensor.Name)
+                        {
+                            case "CPU Total": addPoint(_cpuLoadTotal, sensor.Value.Value); break;
+                            case "Core (Tctl/Tdie)": addPoint(_cpuTemp, sensor.Value.Value); break;
+                            case "Package": addPoint(_cpuPower, sensor.Value.Value); break;
+                        }
                     }
-                }
+
+                else if (hardware.HardwareType == HardwareType.GpuAmd)
+                    foreach (ISensor sensor in hardware.Sensors)
+                    {
+                        if (!sensor.Value.HasValue) continue;
+
+                        switch (sensor.Name)
+                        {
+                            case "GPU Core":
+                                if (sensor.SensorType == SensorType.Load)
+                                    addPoint(_gpuCoreLoad, sensor.Value.Value);
+                                if (sensor.SensorType == SensorType.Temperature)
+                                    addPoint(_gpuCoreTemp, sensor.Value.Value);
+                                break;
+                            case "GPU Memory":
+                                if (sensor.SensorType == SensorType.Temperature)
+                                    addPoint(_gpuMemoryTemp, sensor.Value.Value);
+                                break;
+                            case "GPU Hot Spot": addPoint(_gpuHotspotTemp, sensor.Value.Value); break;
+                            case "GPU Package": addPoint(_gpuPower, sensor.Value.Value); break;
+                            case "GPU Memory Used": addPoint(_gpuMemoryUsed, sensor.Value.Value); break;
+                        }
+                    }
+
+                else if (hardware.HardwareType == HardwareType.Memory)
+                    foreach (ISensor sensor in hardware.Sensors)
+                    {
+                        if (!sensor.Value.HasValue) continue;
+
+                        switch (sensor.Name)
+                        {
+                            case "Memory": addPoint(_ramUsedPercentage, sensor.Value.Value); break;
+
+                        }
+                    }
             }
-
-
-
+        }
+        private void addPoint(ObservableCollection<float> collection, float value)
+        {
+            collection.Add(value);
+            if (collection.Count > MaxPoints)
+                collection.Clear();
         }
     }
 }
