@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using InfluxDB3.Client;
+using InfluxDB3.Client.Write;
 
 
 namespace hwmonitor
@@ -64,7 +66,6 @@ namespace hwmonitor
         private string _ramUsedGBText = "0GB";
         public string RamUsedGBText { get => _ramUsedGBText; set { _ramUsedGBText = value; OnPropertyChanged(nameof(RamUsedGBText)); } }
 
-
         public ISeries[] CpuLoadSeries { get; set; }
         public ISeries[] CpuTempSeries { get; set; }
         public ISeries[] CpuPowerSeries { get; set; }
@@ -92,7 +93,7 @@ namespace hwmonitor
             new Axis { MinLimit = 0, MaxLimit = 300, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 75, IsVisible = false }
         };
 
-
+        private InfluxDBClient _influxClient;
 
         private DispatcherTimer _timer;
         private const int MaxPoints = 60;
@@ -111,6 +112,14 @@ namespace hwmonitor
 
         public MainWindow()
         {
+            var host = Environment.GetEnvironmentVariable("INFLUXDB3_HOST")
+                ?? throw new InvalidOperationException("INFLUXDB3_HOST is not set");
+            var token = Environment.GetEnvironmentVariable("INFLUXDB3_AUTH_TOKEN")
+                ?? throw new InvalidOperationException("INFLUXDB3_AUTH_TOKEN is not set");
+            var database = Environment.GetEnvironmentVariable("INFLUXDB3_DATABASE");
+
+            _influxClient = new InfluxDBClient(host: host, token: token, database: database);
+
             InitializeComponent();
             DataContext = this;
 
@@ -168,7 +177,11 @@ namespace hwmonitor
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            _timer.Tick += (s, e) => UpdateMetrics();
+            _timer.Tick += async (s, e) =>
+            {
+                UpdateMetrics();
+                await WriteMetricsToInflux();
+            };
             _timer.Start();
 
         }
@@ -246,6 +259,27 @@ namespace hwmonitor
                     }
             }
         }
+        private async Task WriteMetricsToInflux()
+        {
+            if (_cpuLoadTotal.Count == 0) return;
+
+            var point = PointData.Measurement("pcmetrics")
+                .SetTag("host", Environment.MachineName)
+                .SetField("cpu_load", _cpuLoadTotal.Last())
+                .SetField("cpu_temp", _cpuTemp.Last())
+                .SetField("cpu_power", _cpuPower.Last())
+                .SetField("gpu_load", _gpuCoreLoad.Last())
+                .SetField("gpu_core_temp", _gpuCoreTemp.Last())
+                .SetField("gpu_memory_temp", _gpuMemoryTemp.Last())
+                .SetField("gpu_hotspot_temp", _gpuHotspotTemp.Last())
+                .SetField("gpu_power", _gpuPower.Last())
+                .SetField("gpu_memory_percent", _gpuMemoryUsed.Last())
+                .SetField("ram_percent", _ramUsedPercentage.Last())
+                .SetTimestamp(DateTime.UtcNow); 
+
+            await _influxClient.WritePointAsync(point);
+        }
+        
         private void addPoint(ObservableCollection<float> collection, float value)
         {
             collection.Add(value);
