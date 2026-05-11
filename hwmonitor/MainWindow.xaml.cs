@@ -180,7 +180,7 @@ namespace hwmonitor
             _timer.Tick += async (s, e) =>
             {
                 UpdateMetrics();
-                await WriteMetricsToInflux();
+                //await WriteMetricsToInflux();
             };
             _timer.Start();
 
