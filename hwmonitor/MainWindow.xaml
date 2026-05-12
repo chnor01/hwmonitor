@@ -79,103 +79,103 @@
         
 
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="CPU Load"/>
                     <TextBlock Text="{Binding CpuLoadText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding CpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding CpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="CPU Temp"/>
                     <TextBlock Text="{Binding CpuTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding CpuTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding CpuTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="CPU Power"/>
                     <TextBlock Text="{Binding CpuPowerText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding CpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding CpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Core Load"/>
                     <TextBlock Text="{Binding GpuCoreLoadText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Core Temp"/>
                     <TextBlock Text="{Binding GpuCoreTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuCoreTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuCoreTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Memory Temp"/>
                     <TextBlock Text="{Binding GpuMemoryTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuMemoryTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuMemoryTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Hotspot Temp"/>
                     <TextBlock Text="{Binding GpuHotspotTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuHotspotTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuHotspotTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="3" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Power"/>
                     <TextBlock Text="{Binding GpuPowerText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="GPU Memory"/>
                     <TextBlock Text="{Binding GpuMemoryUsedGBText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding GpuMemoryUsageSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding GpuMemoryUsageSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+            </DockPanel>
         </Border>
 
         <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource ChartCard}">
-            <StackPanel>
-                <DockPanel>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
                     <TextBlock Text="RAM"/>
                     <TextBlock Text="{Binding RamUsedGBText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Height="160" Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
-            </StackPanel>
+                <lvc:CartesianChart Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+            </DockPanel>
         </Border>
     </Grid>
 </Window>
