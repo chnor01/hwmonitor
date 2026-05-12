@@ -45,7 +45,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.ColumnSpan="4" Background="#1A1A1A">
+        <Border Grid.Row="0" Grid.ColumnSpan="4" Background="#2A2A2A ">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -61,120 +61,128 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"  Text="CPU" Foreground="#888888"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Rectangle Width="30" Height="30" Fill="#0D1B2A" Margin="0,0,6,0"/>
+                    <TextBlock Text="CPU" Foreground="#888888"/>
+                </StackPanel>
                 <TextBlock Grid.Column="1"  Text="{Binding CpuLoadText}"/>
                 <TextBlock Grid.Column="2"  Text="{Binding CpuTempText}"/>
                 <TextBlock Grid.Column="3"  Text="{Binding CpuPowerText}"/>
                 <Border Grid.Column="4"  Width="1" Background="#333333" Margin="8,12"/>
-                <TextBlock Grid.Column="5"  Text="GPU" Foreground="#888888"/>
+                <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Rectangle Width="30" Height="30" Fill="#1A0D2A" Margin="0,0,6,0"/>
+                    <TextBlock Text="GPU" Foreground="#888888"/>
+                </StackPanel>
                 <TextBlock Grid.Column="6"  Text="{Binding GpuCoreLoadText}"/>
                 <TextBlock Grid.Column="7"  Text="{Binding GpuCoreTempText}"/>
                 <TextBlock Grid.Column="8"  Text="{Binding GpuPowerText}"/>
                 <Border Grid.Column="9"  Width="1" Background="#333333" Margin="8,12"/>
-                <TextBlock Grid.Column="10" Text="RAM" Foreground="#888888"/>
+                <StackPanel Grid.Column="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Rectangle Width="30" Height="30" Fill="#0D2A1A" Margin="0,0,6,0"/>
+                    <TextBlock Text="RAM" Foreground="#888888"/>
+                </StackPanel>
                 <TextBlock Grid.Column="11" Text="{Binding RamUsedGBText}"/>
             </Grid>
         </Border>
         
 
-        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#0D1B2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="CPU Load"/>
+                    <TextBlock Text="Utilization"/>
                     <TextBlock Text="{Binding CpuLoadText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding CpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+                <lvc:CartesianChart Series="{Binding CpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#0D1B2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#0D1B2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="CPU Temp"/>
+                    <TextBlock Text="Temperature"/>
                     <TextBlock Text="{Binding CpuTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding CpuTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+                <lvc:CartesianChart Series="{Binding CpuTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to120Temp}" Background="#0D1B2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#0D1B2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="CPU Power"/>
+                    <TextBlock Text="Power Consumption"/>
                     <TextBlock Text="{Binding CpuPowerText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding CpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
+                <lvc:CartesianChart Series="{Binding CpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to160Watts}" Background="#0D1B2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Core Load"/>
+                    <TextBlock Text="Utilization"/>
                     <TextBlock Text="{Binding GpuCoreLoadText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+                <lvc:CartesianChart Series="{Binding GpuLoadSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Core Temp"/>
+                    <TextBlock Text="Core Temperature"/>
                     <TextBlock Text="{Binding GpuCoreTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuCoreTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+                <lvc:CartesianChart Series="{Binding GpuCoreTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to120Temp}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Memory Temp"/>
+                    <TextBlock Text="Memory Temperature"/>
                     <TextBlock Text="{Binding GpuMemoryTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuMemoryTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+                <lvc:CartesianChart Series="{Binding GpuMemoryTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to120Temp}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Hotspot Temp"/>
+                    <TextBlock Text="Hotspot Temperature"/>
                     <TextBlock Text="{Binding GpuHotspotTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuHotspotTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to150Temp}"/>
+                <lvc:CartesianChart Series="{Binding GpuHotspotTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to120Temp}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="2" Grid.Column="3" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="2" Grid.Column="3" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Power"/>
+                    <TextBlock Text="Power Consumption"/>
                     <TextBlock Text="{Binding GpuPowerText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to250Watts}"/>
+                <lvc:CartesianChart Series="{Binding GpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to200Watts}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="GPU Memory"/>
+                    <TextBlock Text="Memory Usage"/>
                     <TextBlock Text="{Binding GpuMemoryUsedGBText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding GpuMemoryUsageSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+                <lvc:CartesianChart Series="{Binding GpuMemoryUsageSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#1A0D2A"/>
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource ChartCard}">
+        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#0D2A1A">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <TextBlock Text="RAM"/>
+                    <TextBlock Text="RAM Usage"/>
                     <TextBlock Text="{Binding RamUsedGBText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                 </DockPanel>
-                <lvc:CartesianChart Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}"/>
+                <lvc:CartesianChart Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#0D2A1A"/>
             </DockPanel>
         </Border>
     </Grid>

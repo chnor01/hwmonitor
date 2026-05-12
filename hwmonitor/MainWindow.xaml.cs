@@ -84,14 +84,19 @@ namespace hwmonitor
         {
             new Axis { MinLimit = 0, MaxLimit = 100, Labeler = value => $"{value}%", ForceStepToMin = true, MinStep = 25, IsVisible = false }
         };
-        public Axis[] YAxes0to150Temp { get; set; } = new Axis[]
+        public Axis[] YAxes0to120Temp { get; set; } = new Axis[]
         {
-            new Axis { MinLimit = 0, MaxLimit = 150, Labeler = value => $"{value}°C", ForceStepToMin = true, MinStep = 50, IsVisible = false }
+            new Axis { MinLimit = 0, MaxLimit = 120, Labeler = value => $"{value}°C", ForceStepToMin = true, MinStep = 30, IsVisible = false }
         };
-        public Axis[] YAxes0to250Watts { get; set; } = new Axis[]
+        public Axis[] YAxes0to160Watts { get; set; } = new Axis[]
         {
-            new Axis { MinLimit = 0, MaxLimit = 300, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 75, IsVisible = false }
+            new Axis { MinLimit = 0, MaxLimit = 160, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 40, IsVisible = false }
         };
+        public Axis[] YAxes0to200Watts { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 200, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 50, IsVisible = false }
+        };
+
 
         private InfluxDBClient _influxClient;
 
@@ -125,50 +130,52 @@ namespace hwmonitor
 
             CpuLoadSeries = new ISeries[]
             { 
-                new LineSeries<float> { Values = _cpuLoadTotal, Name = "CPU Load", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
+                new LineSeries<float> { Values = _cpuLoadTotal, Name = "CPU Load", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
             };
 
             CpuTempSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _cpuTemp, Name = "CPU Temp", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
+                new LineSeries<float> { Values = _cpuTemp, Name = "CPU Temp", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
             };
+
             CpuPowerSeries = new ISeries [] 
             {
-            new LineSeries<float> { Values = _cpuPower, Name = "CPU Power", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}W" }
+            new LineSeries<float> { Values = _cpuPower, Name = "CPU Power", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}W" }
             };
+
             GpuLoadSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuCoreLoad, Name = "GPU Core Load", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 }
+                new LineSeries<float> { Values = _gpuCoreLoad, Name = "GPU Core Load", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1 }
             };
 
             GpuCoreTempSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuCoreTemp,    Name = "GPU Core Temp", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+                new LineSeries<float> { Values = _gpuCoreTemp,    Name = "GPU Core Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
             };
 
             GpuMemoryTempSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuMemoryTemp,  Name = "GPU Memory Temp", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+                new LineSeries<float> { Values = _gpuMemoryTemp,  Name = "GPU Memory Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
             };
 
             GpuHotspotTempSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuHotspotTemp, Name = "GPU Hotspot Temp", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+                new LineSeries<float> { Values = _gpuHotspotTemp, Name = "GPU Hotspot Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
             };
 
             GpuPowerSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuPower, Name = "GPU Power", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1  }
+                new LineSeries<float> { Values = _gpuPower, Name = "GPU Power", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
             };
 
             GpuMemoryUsageSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _gpuMemoryUsed, Name = "GPU Memory", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
+                new LineSeries<float> { Values = _gpuMemoryUsed, Name = "GPU Memory", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
             };
 
             RamSeries = new ISeries[]
             {
-                new LineSeries<float> { Values = _ramUsedPercentage, Name = "RAM Usage", Fill = new SolidColorPaint(SKColors.Crimson.WithAlpha(120)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Crimson) { StrokeThickness = 2 }, LineSmoothness = 1 , YToolTipLabelFormatter = p => $"{p.Model:F1}%"}
+                new LineSeries<float> { Values = _ramUsedPercentage, Name = "RAM Usage", Fill = new SolidColorPaint(SKColors.MediumSpringGreen.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumSpringGreen) { StrokeThickness = 2 }, LineSmoothness = 1 , YToolTipLabelFormatter = p => $"{p.Model:F1}%"}
             };
 
             computer.Open();
