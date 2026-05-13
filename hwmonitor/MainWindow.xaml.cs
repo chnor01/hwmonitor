@@ -10,6 +10,10 @@ using System.Windows;
 using System.Windows.Threading;
 using InfluxDB3.Client;
 using InfluxDB3.Client.Write;
+using System.Text.Json;
+using System.IO;
+using Google.Protobuf;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace hwmonitor
@@ -97,6 +101,7 @@ namespace hwmonitor
             new Axis { MinLimit = 0, MaxLimit = 200, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 50, IsVisible = false }
         };
 
+        private AlertSettings _alertSettings;
 
         private InfluxDBClient _influxClient;
 
@@ -127,6 +132,7 @@ namespace hwmonitor
 
             InitializeComponent();
             DataContext = this;
+            _alertSettings = AlertSettings.Load();
 
             CpuLoadSeries = new ISeries[]
             { 
@@ -200,6 +206,8 @@ namespace hwmonitor
                     continue;
 
                 hardware.Update();
+
+                //Debug.WriteLine($"{hardware.HardwareType}: {hardware.Name}");
 
                 if (hardware.HardwareType == HardwareType.Cpu)
                     foreach (ISensor sensor in hardware.Sensors)
@@ -300,5 +308,13 @@ namespace hwmonitor
             computer.Close();
             base.OnClosed(e);
         }
+
+        private void OpenSettingsWindow(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow(_alertSettings.Clone());
+            if (settingsWindow.ShowDialog() == true)
+                _alertSettings = settingsWindow.Settings;
+        }
+
     }
 }
