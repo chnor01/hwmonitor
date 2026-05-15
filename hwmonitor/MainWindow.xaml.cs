@@ -103,6 +103,14 @@ namespace hwmonitor
 
         private AlertSettings _alertSettings;
 
+        private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon
+        {
+            Visible = true,
+            Icon = System.Drawing.SystemIcons.Information
+        };
+
+        private DateTime _lastNotification = DateTime.MinValue;
+
         private InfluxDBClient _influxClient;
 
         private DispatcherTimer _timer;
@@ -207,8 +215,6 @@ namespace hwmonitor
 
                 hardware.Update();
 
-                //Debug.WriteLine($"{hardware.HardwareType}: {hardware.Name}");
-
                 if (hardware.HardwareType == HardwareType.Cpu)
                     foreach (ISensor sensor in hardware.Sensors)
                     {
@@ -216,9 +222,26 @@ namespace hwmonitor
 
                         switch (sensor.Name)
                         {
-                            case "CPU Total": addPoint(_cpuLoadTotal, sensor.Value.Value); CpuLoadText = $"{sensor.Value.Value:F1}%"; break;
-                            case "Core (Tctl/Tdie)": addPoint(_cpuTemp, sensor.Value.Value); CpuTempText = $"{sensor.Value.Value:F1}°C"; break;
-                            case "Package": addPoint(_cpuPower, sensor.Value.Value); CpuPowerText = $"{sensor.Value.Value:F1}W"; break;
+                            case "CPU Total":
+                                addPoint(_cpuLoadTotal, sensor.Value.Value);
+                                CpuLoadText = $"{sensor.Value.Value:F1}%";
+                                if (sensor.Value.Value >= _alertSettings.CpuLoadCritical)
+                                    SendNotification("CPU Critical", $"CPU load is {sensor.Value.Value:F1}%");
+                                else if (sensor.Value.Value >= _alertSettings.CpuLoadWarning)
+                                    SendNotification("CPU Warning", $"CPU load is {sensor.Value.Value:F1}%");
+                                break;
+                            case "Core (Tctl/Tdie)":
+                                addPoint(_cpuTemp, sensor.Value.Value);
+                                CpuTempText = $"{sensor.Value.Value:F1}°C";
+                                if (sensor.Value.Value >= _alertSettings.CpuTempCritical)
+                                    SendNotification("CPU Critical", $"CPU temp is {sensor.Value.Value:F1}°C");
+                                else if (sensor.Value.Value >= _alertSettings.CpuTempWarning)
+                                    SendNotification("CPU Warning", $"CPU temp is {sensor.Value.Value:F1}°C");
+                                break;
+                            case "Package":
+                                addPoint(_cpuPower, sensor.Value.Value);
+                                CpuPowerText = $"{sensor.Value.Value:F1}W";
+                                break;
                         }
                     }
 
@@ -234,11 +257,19 @@ namespace hwmonitor
                                 {
                                     addPoint(_gpuCoreLoad, sensor.Value.Value);
                                     GpuCoreLoadText = $"{sensor.Value.Value:F1}%";
+                                    if (sensor.Value.Value >= _alertSettings.GpuLoadCritical)
+                                        SendNotification("GPU Critical", $"GPU load is {sensor.Value.Value:F1}%");
+                                    else if (sensor.Value.Value >= _alertSettings.GpuLoadWarning)
+                                        SendNotification("GPU Warning", $"GPU load is {sensor.Value.Value:F1}%");
                                 }
                                 if (sensor.SensorType == SensorType.Temperature)
                                 {
                                     addPoint(_gpuCoreTemp, sensor.Value.Value);
                                     GpuCoreTempText = $"{sensor.Value.Value:F1}°C";
+                                    if (sensor.Value.Value >= _alertSettings.GpuTempCritical)
+                                        SendNotification("GPU Critical", $"GPU temp is {sensor.Value.Value:F1}°C");
+                                    else if (sensor.Value.Value >= _alertSettings.GpuTempWarning)
+                                        SendNotification("GPU Warning", $"GPU temp is {sensor.Value.Value:F1}°C");
                                 }
                                 break;
                             case "GPU Memory":
@@ -248,13 +279,25 @@ namespace hwmonitor
                                     GpuMemoryTempText = $"{sensor.Value.Value:F1}°C";
                                 }
                                 break;
-                            case "GPU Hot Spot": addPoint(_gpuHotspotTemp, sensor.Value.Value); GpuHotspotTempText = $"{sensor.Value.Value:F1}°C"; break;
-                            case "GPU Package": addPoint(_gpuPower, sensor.Value.Value); GpuPowerText = $"{sensor.Value.Value:F1}W"; break;
-                            case "GPU Memory Total": gpuMemoryTotalMB = sensor.Value.Value; break;
+                            case "GPU Hot Spot":
+                                addPoint(_gpuHotspotTemp, sensor.Value.Value);
+                                GpuHotspotTempText = $"{sensor.Value.Value:F1}°C";
+                                break;
+                            case "GPU Package":
+                                addPoint(_gpuPower, sensor.Value.Value);
+                                GpuPowerText = $"{sensor.Value.Value:F1}W";
+                                if (sensor.Value.Value >= _alertSettings.GpuPowerCritical)
+                                    SendNotification("GPU Critical", $"GPU power is {sensor.Value.Value:F1}W");
+                                else if (sensor.Value.Value >= _alertSettings.GpuPowerWarning)
+                                    SendNotification("GPU Warning", $"GPU power is {sensor.Value.Value:F1}W");
+                                break;
+                            case "GPU Memory Total":
+                                gpuMemoryTotalMB = sensor.Value.Value;
+                                break;
                             case "GPU Memory Used":
                                 gpuMemoryPercent = (sensor.Value.Value / gpuMemoryTotalMB) * 100;
-                                addPoint(_gpuMemoryUsed, gpuMemoryPercent); 
-                                GpuMemoryUsedGBText = $"{sensor.Value.Value / 1024:F2}/{gpuMemoryTotalMB / 1024:F0}GB"; 
+                                addPoint(_gpuMemoryUsed, gpuMemoryPercent);
+                                GpuMemoryUsedGBText = $"{sensor.Value.Value / 1024:F2}/{gpuMemoryTotalMB / 1024:F0}GB";
                                 break;
                         }
                     }
@@ -262,14 +305,24 @@ namespace hwmonitor
                 else if (hardware.HardwareType == HardwareType.Memory)
                     foreach (ISensor sensor in hardware.Sensors)
                     {
-                        //Debug.WriteLine($"{sensor.SensorType}: {sensor.Name} -- {sensor.Value}");
                         if (!sensor.Value.HasValue) continue;
 
                         switch (sensor.Name)
                         {
-                            case "Memory Used": ramUsedGB = sensor.Value.Value; break;
-                            case "Memory Available": ramAvailGB = sensor.Value.Value; RamUsedGBText = $"{ramUsedGB:F1}/{ramUsedGB + ramAvailGB:F0}GB"; break;
-                            case "Memory": addPoint(_ramUsedPercentage, sensor.Value.Value); break;
+                            case "Memory Used":
+                                ramUsedGB = sensor.Value.Value;
+                                break;
+                            case "Memory Available":
+                                ramAvailGB = sensor.Value.Value;
+                                RamUsedGBText = $"{ramUsedGB:F1}/{ramUsedGB + ramAvailGB:F0}GB";
+                                break;
+                            case "Memory":
+                                addPoint(_ramUsedPercentage, sensor.Value.Value);
+                                if (sensor.Value.Value >= _alertSettings.RamCritical)
+                                    SendNotification("RAM Critical", $"RAM usage is {sensor.Value.Value:F1}%");
+                                else if (sensor.Value.Value >= _alertSettings.RamWarning)
+                                    SendNotification("RAM Warning", $"RAM usage is {sensor.Value.Value:F1}%");
+                                break;
                         }
                     }
             }
@@ -305,8 +358,22 @@ namespace hwmonitor
         protected override void OnClosed(EventArgs e)
         {
             _timer.Stop();
+            _notifyIcon.Dispose();
             computer.Close();
             base.OnClosed(e);
+        }
+
+        private void SendNotification(string title, string message)
+        {
+            if ((DateTime.UtcNow - _lastNotification).TotalSeconds < 30)
+                return;
+
+            _notifyIcon.BalloonTipTitle = title;
+            _notifyIcon.BalloonTipText = message;
+            _notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            _notifyIcon.ShowBalloonTip(3000);
+
+            _lastNotification = DateTime.UtcNow;
         }
 
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)

@@ -4,6 +4,8 @@ using System.Windows;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
+using Application = System.Windows.Application;
+
 
 namespace hwmonitor
 {
