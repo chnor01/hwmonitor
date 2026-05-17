@@ -36,22 +36,22 @@ namespace hwmonitor
 
         private string _cpuLoadText = "0%";
         public string CpuLoadText { get => _cpuLoadText; set { _cpuLoadText = value; OnPropertyChanged(nameof(CpuLoadText)); } }
-        
+
         private string _cpuTempText = "0°C";
         public string CpuTempText { get => _cpuTempText; set { _cpuTempText = value; OnPropertyChanged(nameof(CpuTempText)); } }
-        
+
         private string _cpuPowerText = "0W";
         public string CpuPowerText { get => _cpuPowerText; set { _cpuPowerText = value; OnPropertyChanged(nameof(CpuPowerText)); } }
-        
+
         private string _gpuCoreLoadText = "0%";
         public string GpuCoreLoadText { get => _gpuCoreLoadText; set { _gpuCoreLoadText = value; OnPropertyChanged(nameof(GpuCoreLoadText)); } }
-        
+
         private string _gpuCoreTempText = "0°C";
         public string GpuCoreTempText { get => _gpuCoreTempText; set { _gpuCoreTempText = value; OnPropertyChanged(nameof(GpuCoreTempText)); } }
-        
+
         private string _gpuMemoryTempText = "0°C";
         public string GpuMemoryTempText { get => _gpuMemoryTempText; set { _gpuMemoryTempText = value; OnPropertyChanged(nameof(GpuMemoryTempText)); } }
-        
+
         private string _gpuHotspotTempText = "0°C";
         public string GpuHotspotTempText { get => _gpuHotspotTempText; set { _gpuHotspotTempText = value; OnPropertyChanged(nameof(GpuHotspotTempText)); } }
 
@@ -138,7 +138,7 @@ namespace hwmonitor
             _alertSettings = AlertSettings.Load();
 
             CpuLoadSeries = new ISeries[]
-            { 
+            {
                 new LineSeries<float> { Values = _cpuLoadTotal, Name = "CPU Load", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
             };
 
@@ -147,7 +147,7 @@ namespace hwmonitor
                 new LineSeries<float> { Values = _cpuTemp, Name = "CPU Temp", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
             };
 
-            CpuPowerSeries = new ISeries [] 
+            CpuPowerSeries = new ISeries[]
             {
             new LineSeries<float> { Values = _cpuPower, Name = "CPU Power", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}W" }
             };
@@ -298,35 +298,60 @@ namespace hwmonitor
 
         private void CheckAlerts(SensorData data)
         {
-            if (data.CpuLoadTotal >= _alertSettings.CpuLoadCritical)
-                SendNotification("CPU Critical", $"CPU load is {data.CpuLoadTotal:F1}%");
-            else if (data.CpuLoadTotal >= _alertSettings.CpuLoadWarning)
-                SendNotification("CPU Warning", $"CPU load is {data.CpuLoadTotal:F1}%");
+            if (_alertSettings.CpuLoadAlertEnabled)
+            {
+                if (data.CpuLoadTotal >= _alertSettings.CpuLoadCritical)
+                    SendNotification("CPU Critical", $"CPU load is {data.CpuLoadTotal:F1}%");
+                else if (data.CpuLoadTotal >= _alertSettings.CpuLoadWarning)
+                    SendNotification("CPU Warning", $"CPU load is {data.CpuLoadTotal:F1}%");
+            }
+            if (_alertSettings.CpuTempAlertEnabled)
+            {
+                if (data.CpuTemp >= _alertSettings.CpuTempCritical)
+                    SendNotification("CPU Critical", $"CPU temp is {data.CpuTemp:F1}°C");
+                else if (data.CpuTemp >= _alertSettings.CpuTempWarning)
+                    SendNotification("CPU Warning", $"CPU temp is {data.CpuTemp:F1}°C");
+            }
 
-            if (data.CpuTemp >= _alertSettings.CpuTempCritical)
-                SendNotification("CPU Critical", $"CPU temp is {data.CpuTemp:F1}°C");
-            else if (data.CpuTemp >= _alertSettings.CpuTempWarning)
-                SendNotification("CPU Warning", $"CPU temp is {data.CpuTemp:F1}°C");
+            if (_alertSettings.CpuPowerAlertEnabled)
+            {
+                if (data.CpuPower >= _alertSettings.CpuPowerCritical)
+                    SendNotification("CPU Critical", $"CPU power is {data.CpuPower:F1}W");
+                else if (data.CpuPower >= _alertSettings.CpuPowerWarning)
+                    SendNotification("CPU Warning", $"CPU power is {data.CpuPower:F1}W");
+            }
 
-            if (data.GpuCoreLoad >= _alertSettings.GpuLoadCritical)
-                SendNotification("GPU Critical", $"GPU load is {data.GpuCoreLoad:F1}%");
-            else if (data.GpuCoreLoad >= _alertSettings.GpuLoadWarning)
-                SendNotification("GPU Warning", $"GPU load is {data.GpuCoreLoad:F1}%");
+            if (_alertSettings.GpuLoadAlertEnabled)
+            {
+                if (data.GpuCoreLoad >= _alertSettings.GpuLoadCritical)
+                    SendNotification("GPU Critical", $"GPU load is {data.GpuCoreLoad:F1}%");
+                else if (data.GpuCoreLoad >= _alertSettings.GpuLoadWarning)
+                    SendNotification("GPU Warning", $"GPU load is {data.GpuCoreLoad:F1}%");
+            }
 
-            if (data.GpuCoreTemp >= _alertSettings.GpuTempCritical)
-                SendNotification("GPU Critical", $"GPU temp is {data.GpuCoreTemp:F1}°C");
-            else if (data.GpuCoreTemp >= _alertSettings.GpuTempWarning)
-                SendNotification("GPU Warning", $"GPU temp is {data.GpuCoreTemp:F1}°C");
+            if (_alertSettings.GpuTempAlertEnabled)
+            {
+                if (data.GpuCoreTemp >= _alertSettings.GpuTempCritical)
+                    SendNotification("GPU Critical", $"GPU temp is {data.GpuCoreTemp:F1}°C");
+                else if (data.GpuCoreTemp >= _alertSettings.GpuTempWarning)
+                    SendNotification("GPU Warning", $"GPU temp is {data.GpuCoreTemp:F1}°C");
+            }
 
-            if (data.GpuPower >= _alertSettings.GpuPowerCritical)
-                SendNotification("GPU Critical", $"GPU power is {data.GpuPower:F1}W");
-            else if (data.GpuPower >= _alertSettings.GpuPowerWarning)
-                SendNotification("GPU Warning", $"GPU power is {data.GpuPower:F1}W");
+            if (_alertSettings.GpuPowerAlertEnabled)
+            {
+                if (data.GpuPower >= _alertSettings.GpuPowerCritical)
+                    SendNotification("GPU Critical", $"GPU power is {data.GpuPower:F1}W");
+                else if (data.GpuPower >= _alertSettings.GpuPowerWarning)
+                    SendNotification("GPU Warning", $"GPU power is {data.GpuPower:F1}W");
+            }
 
-            if (data.RamPercent >= _alertSettings.RamCritical)
-                SendNotification("RAM Critical", $"RAM usage is {data.RamPercent:F1}%");
-            else if (data.RamPercent >= _alertSettings.RamWarning)
-                SendNotification("RAM Warning", $"RAM usage is {data.RamPercent:F1}%");
+            if (_alertSettings.RamAlertEnabled)
+            {
+                if (data.RamPercent >= _alertSettings.RamCritical)
+                    SendNotification("RAM Critical", $"RAM usage is {data.RamPercent:F1}%");
+                else if (data.RamPercent >= _alertSettings.RamWarning)
+                    SendNotification("RAM Warning", $"RAM usage is {data.RamPercent:F1}%");
+            }
         }
 
 
@@ -344,11 +369,11 @@ namespace hwmonitor
                 .SetField("gpu_power", data.GpuPower)
                 .SetField("gpu_memory_percent", data.GpuMemoryPercent)
                 .SetField("ram_percent", data.RamPercent)
-                .SetTimestamp(DateTime.UtcNow); 
+                .SetTimestamp(DateTime.UtcNow);
 
             await _influxClient.WritePointAsync(point);
         }
-        
+
         private void addPoint(ObservableCollection<float> collection, float value)
         {
             collection.Add(value);
@@ -380,8 +405,8 @@ namespace hwmonitor
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
             var settingsWindow = new SettingsWindow(_alertSettings.Clone());
-            if (settingsWindow.ShowDialog() == true)
-                _alertSettings = settingsWindow.Settings;
+            settingsWindow.Closed += (s, e) => _alertSettings = AlertSettings.Load();
+            settingsWindow.Show();
         }
 
     }

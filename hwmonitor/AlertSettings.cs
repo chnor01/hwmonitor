@@ -9,20 +9,31 @@ namespace hwmonitor
         public class AlertSettings
         {
             public float CpuTempWarning { get; set; } = 80;
-            public float CpuTempCritical { get; set; } = 95;
-            public float CpuLoadWarning { get; set; } = 80;
+            public float CpuTempCritical { get; set; } = 85;
+            public float CpuLoadWarning { get; set; } = 90;
             public float CpuLoadCritical { get; set; } = 95;
+            public float CpuPowerWarning { get; set; } = 105;
+            public float CpuPowerCritical { get; set; } = 115;
 
             public float GpuTempWarning { get; set; } = 80;
             public float GpuTempCritical { get; set; } = 95;
             public float GpuLoadWarning { get; set; } = 80;
             public float GpuLoadCritical { get; set; } = 95;
+            public float GpuPowerWarning { get; set; } = 170;
+            public float GpuPowerCritical { get; set; } = 190;
 
-            public float GpuPowerWarning { get; set; } = 250;
-            public float GpuPowerCritical { get; set; } = 300;
-
-            public float RamWarning { get; set; } = 80;
+            public float RamWarning { get; set; } = 85;
             public float RamCritical { get; set; } = 95;
+
+            public bool CpuTempAlertEnabled { get; set; } = true;
+            public bool CpuLoadAlertEnabled { get; set; } = true;
+            public bool CpuPowerAlertEnabled { get; set; } = true;
+
+            public bool GpuTempAlertEnabled { get; set; } = true;
+            public bool GpuLoadAlertEnabled { get; set; } = true;
+            public bool GpuPowerAlertEnabled { get; set; } = true;
+
+            public bool RamAlertEnabled { get; set; } = true;
 
         public AlertSettings Clone() => new AlertSettings
         {
@@ -30,6 +41,8 @@ namespace hwmonitor
             CpuTempCritical = CpuTempCritical,
             CpuLoadWarning = CpuLoadWarning,
             CpuLoadCritical = CpuLoadCritical,
+            CpuPowerWarning = CpuPowerWarning,
+            CpuPowerCritical = CpuPowerCritical,
             GpuTempWarning = GpuTempWarning,
             GpuTempCritical = GpuTempCritical,
             GpuLoadWarning = GpuLoadWarning,
@@ -37,7 +50,14 @@ namespace hwmonitor
             GpuPowerWarning = GpuPowerWarning,
             GpuPowerCritical = GpuPowerCritical,
             RamWarning = RamWarning,
-            RamCritical = RamCritical
+            RamCritical = RamCritical,
+            CpuTempAlertEnabled = CpuTempAlertEnabled,
+            CpuLoadAlertEnabled = CpuLoadAlertEnabled,
+            CpuPowerAlertEnabled = CpuPowerAlertEnabled,
+            GpuTempAlertEnabled = GpuTempAlertEnabled,
+            GpuLoadAlertEnabled = GpuLoadAlertEnabled,
+            GpuPowerAlertEnabled = GpuPowerAlertEnabled,
+            RamAlertEnabled = RamAlertEnabled,
         };
 
         private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "alertSettings.json");

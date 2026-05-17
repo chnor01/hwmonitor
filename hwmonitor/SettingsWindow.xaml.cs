@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MediaColor = System.Windows.Media.Color;
+
 
 namespace hwmonitor
 {
@@ -19,7 +21,7 @@ namespace hwmonitor
     {
         private AlertSettings _settings;
         public AlertSettings Settings => _settings;
-        
+
 
         public SettingsWindow(AlertSettings settings)
         {
@@ -28,16 +30,20 @@ namespace hwmonitor
             DataContext = _settings;
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             _settings.Save();
-            DialogResult = true;
-            Close();
+            SaveButton.Content = "Saved!";
+            await Task.Delay(1500);
+            SaveButton.Content = "Save";
+
         }
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private async void Undo_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
-            Close();
+            _settings = AlertSettings.Load();
+            CancelButton.Content = "Undone!";
+            await Task.Delay(1500);
+            CancelButton.Content = "Undo";
         }
 
     }
