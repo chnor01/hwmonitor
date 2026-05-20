@@ -23,6 +23,10 @@ namespace hwmonitor
         public float RamAvailGB { get; set; }
         public float RamPercent { get; set; }
 
+        public float StorageCompTemp { get; set; }
+        public float StorageReadRate { get; set; }
+        public float StorageWriteRate { get; set; }
+
 
     }
 }

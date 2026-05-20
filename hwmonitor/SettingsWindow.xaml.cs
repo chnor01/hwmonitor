@@ -21,6 +21,7 @@ namespace hwmonitor
     {
         private AlertSettings _settings;
         public AlertSettings Settings => _settings;
+        public Action? OnSettingsSaved { get; set; }
 
 
         public SettingsWindow(AlertSettings settings)
@@ -33,14 +34,16 @@ namespace hwmonitor
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
             _settings.Save();
+            OnSettingsSaved?.Invoke();
             SaveButton.Content = "Saved!";
             await Task.Delay(1500);
             SaveButton.Content = "Save";
-
         }
+
         private async void Undo_Click(object sender, RoutedEventArgs e)
         {
             _settings = AlertSettings.Load();
+            DataContext = _settings;
             CancelButton.Content = "Undone!";
             await Task.Delay(1500);
             CancelButton.Content = "Undo";

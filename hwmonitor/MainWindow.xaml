@@ -59,7 +59,11 @@
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
 					<Rectangle Width="30" Height="30" Fill="#0D1B2A" Margin="0,0,6,0"/>
@@ -68,7 +72,7 @@
 				<TextBlock Grid.Column="1"  Text="{Binding CpuLoadText}"/>
 				<TextBlock Grid.Column="2"  Text="{Binding CpuTempText}"/>
 				<TextBlock Grid.Column="3"  Text="{Binding CpuPowerText}"/>
-				<Border Grid.Column="4"  Width="1" Background="#333333" Margin="8,12"/>
+                <Border Grid.Column="4"  Width="1" Background="#737373" Margin="8,12"/>
 				<StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
 					<Rectangle Width="30" Height="30" Fill="#1A0D2A" Margin="0,0,6,0"/>
 					<TextBlock Text="GPU" Foreground="#888888"/>
@@ -76,13 +80,20 @@
 				<TextBlock Grid.Column="6"  Text="{Binding GpuCoreLoadText}"/>
 				<TextBlock Grid.Column="7"  Text="{Binding GpuCoreTempText}"/>
 				<TextBlock Grid.Column="8"  Text="{Binding GpuPowerText}"/>
-				<Border Grid.Column="9"  Width="1" Background="#333333" Margin="8,12"/>
+				<Border Grid.Column="9"  Width="1" Background="#737373" Margin="8,12"/>
 				<StackPanel Grid.Column="10" Orientation="Horizontal" HorizontalAlignment="Center">
 					<Rectangle Width="30" Height="30" Fill="#0D2A1A" Margin="0,0,6,0"/>
 					<TextBlock Text="RAM" Foreground="#888888"/>
 				</StackPanel>
 				<TextBlock Grid.Column="11" Text="{Binding RamUsedGBText}"/>
-				<Button Grid.Column="12" Content="⚙" Click="OpenSettingsWindow" Background="DimGray" BorderBrush="Transparent" Foreground="LightGray" Cursor="Hand"/>
+                <Border Grid.Column="12"  Width="1" Background="#737373" Margin="8,12"/>
+                <StackPanel Grid.Column="13" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Rectangle Width="30" Height="30" Fill="#8f4a0e" Margin="0,0,6,0"/>
+                    <TextBlock Text="Storage" Foreground="#888888"/>
+                </StackPanel>
+                <TextBlock Grid.Column="14"  Text="{Binding StorageReadRateText}"/>
+                <TextBlock Grid.Column="15"  Text="{Binding StorageWriteRateText}"/>
+                <Button Grid.Column="16" Content="⚙" Click="OpenSettingsWindow" Background="DimGray" BorderBrush="Transparent" Foreground="LightGray" Cursor="Hand"/>
 			</Grid>
 		</Border>
 
@@ -186,5 +197,35 @@
 				<lvc:CartesianChart Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#0D2A1A"/>
 			</DockPanel>
 		</Border>
-	</Grid>
+
+        <Border Grid.Row="3" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Read Rate"/>
+                    <TextBlock Text="{Binding StorageReadRateText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
+                </DockPanel>
+                <lvc:CartesianChart Series="{Binding StorageReadRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#8f4a0e"/>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="3" Grid.Column="3" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Write Rate"/>
+                    <TextBlock Text="{Binding StorageWriteRateText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
+                </DockPanel>
+                <lvc:CartesianChart Series="{Binding StorageWriteRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#8f4a0e"/>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="4" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Composite Temperature"/>
+                    <TextBlock Text="{Binding StorageCompTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
+                </DockPanel>
+                <lvc:CartesianChart Series="{Binding StorageCompTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesStorageTemp0to90C}" Background="#8f4a0e"/>
+            </DockPanel>
+        </Border>
+    </Grid>
 </Window>

@@ -32,6 +32,9 @@ namespace hwmonitor
         private ObservableCollection<float> _gpuHotspotTemp = new();
         private ObservableCollection<float> _gpuPower = new();
         private ObservableCollection<float> _ramUsedPercentage = new();
+        private ObservableCollection<float> _storageCompTemp = new();
+        private ObservableCollection<float> _storageReadRate = new();
+        private ObservableCollection<float> _storageWriteRate = new();
 
 
         private string _cpuLoadText = "0%";
@@ -64,6 +67,17 @@ namespace hwmonitor
         private string _ramUsedGBText = "0GB";
         public string RamUsedGBText { get => _ramUsedGBText; set { _ramUsedGBText = value; OnPropertyChanged(nameof(RamUsedGBText)); } }
 
+        private string _storageCompTempText = "0°C";
+        public string StorageCompTempText { get => _storageCompTempText; set { _storageCompTempText = value; OnPropertyChanged(nameof(StorageCompTempText)); } }
+
+        private string _storageReadRateText = "0MB/s";
+        public string StorageReadRateText { get => _storageReadRateText; set { _storageReadRateText = value; OnPropertyChanged(nameof(StorageReadRateText)); } }
+
+        private string _storageWriteRateText = "0MB/s";
+        public string StorageWriteRateText { get => _storageWriteRateText; set { _storageWriteRateText = value; OnPropertyChanged(nameof(StorageWriteRateText)); } }
+
+
+
         public ISeries[] CpuLoadSeries { get; set; }
         public ISeries[] CpuTempSeries { get; set; }
         public ISeries[] CpuPowerSeries { get; set; }
@@ -74,6 +88,10 @@ namespace hwmonitor
         public ISeries[] GpuPowerSeries { get; set; }
         public ISeries[] GpuMemoryUsageSeries { get; set; }
         public ISeries[] RamSeries { get; set; }
+        public ISeries[] StorageCompTempSeries { get; set; }
+        public ISeries[] StorageReadRateSeries { get; set; }
+        public ISeries[] StorageWriteRateSeries { get; set; }
+
         public Axis[] XAxes { get; set; } = new Axis[]
         {
             new Axis { MinLimit = 0, MaxLimit = 60, Labeler = value => $"{value}s", ForceStepToMin = true, MinStep = 15, IsVisible = false }
@@ -93,6 +111,14 @@ namespace hwmonitor
         public Axis[] YAxes0to200Watts { get; set; } = new Axis[]
         {
             new Axis { MinLimit = 0, MaxLimit = 200, Labeler = value => $"{value}W", ForceStepToMin = true, MinStep = 50, IsVisible = false }
+        };
+        public Axis[] YAxesReadWrite7000MBs { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 7000, Labeler = value => $"{value}MB/s", ForceStepToMin = true, MinStep = 1750, IsVisible = false }
+        };
+        public Axis[] YAxesStorageTemp0to90C { get; set; } = new Axis[]
+        {
+            new Axis { MinLimit = 0, MaxLimit = 90, Labeler = value => $"{value}°C", ForceStepToMin = true, MinStep = 25, IsVisible = false }
         };
 
         private AlertSettings _alertSettings;
@@ -116,7 +142,7 @@ namespace hwmonitor
             IsCpuEnabled = true,
             IsGpuEnabled = true,
             IsMemoryEnabled = true,
-            IsStorageEnabled = false,
+            IsStorageEnabled = true,
             IsControllerEnabled = false,
             IsNetworkEnabled = false,
             IsMotherboardEnabled = false,
@@ -185,6 +211,21 @@ namespace hwmonitor
             RamSeries = new ISeries[]
             {
                 new LineSeries<float> { Values = _ramUsedPercentage, Name = "RAM Usage", Fill = new SolidColorPaint(SKColors.MediumSpringGreen.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumSpringGreen) { StrokeThickness = 2 }, LineSmoothness = 1 , YToolTipLabelFormatter = p => $"{p.Model:F1}%"}
+            };
+
+            StorageCompTempSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _storageCompTemp, Name = "Storage Composite Temp", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
+            };
+
+            StorageReadRateSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _storageReadRate, Name = "Storage Read Rate", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}MB/s"}
+            };
+
+            StorageWriteRateSeries = new ISeries[]
+            {
+                new LineSeries<float> { Values = _storageWriteRate, Name = "Storage Write Rate", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}MB/s"}
             };
 
             computer.Open();
@@ -259,6 +300,20 @@ namespace hwmonitor
                             case "Memory": data.RamPercent = sensor.Value.Value; break;
                         }
                     }
+
+                else if (hardware.HardwareType == HardwareType.Storage)
+                {
+                    foreach (ISensor sensor in hardware.Sensors)
+                    {
+                        if (!sensor.Value.HasValue) continue;
+                        switch (sensor.Name)
+                        {
+                            case "Composite Temperature": data.StorageCompTemp = sensor.Value.Value; break;
+                            case "Read Rate": data.StorageReadRate = (sensor.Value.Value / 1_000_000); break;
+                            case "Write Rate": data.StorageWriteRate = (sensor.Value.Value / 1_000_000); break;
+                        }
+                    }
+                }
             }
 
             return data;
@@ -290,9 +345,16 @@ namespace hwmonitor
             addPoint(_ramUsedPercentage, data.RamPercent);
             RamUsedGBText = $"{data.RamUsedGB:F1}/{data.RamUsedGB + data.RamAvailGB:F0}GB";
 
+            addPoint(_storageCompTemp, data.StorageCompTemp);
+            addPoint(_storageReadRate, data.StorageReadRate);
+            addPoint(_storageWriteRate, data.StorageWriteRate);
+            StorageCompTempText = $"{data.StorageCompTemp:F1}°C";
+            StorageReadRateText = $"{data.StorageReadRate:F1}MB/s";
+            StorageWriteRateText = $"{data.StorageWriteRate:F1}MB/s";
+
             CheckAlerts(data);
 
-            _ = WriteMetricsToInflux(data);
+            //_ = WriteMetricsToInflux(data);
 
         }
 
@@ -352,6 +414,14 @@ namespace hwmonitor
                 else if (data.RamPercent >= _alertSettings.RamWarning)
                     SendNotification("RAM Warning", $"RAM usage is {data.RamPercent:F1}%");
             }
+
+            if (_alertSettings.StorageTempAlertEnabled)
+            {
+                if (data.StorageCompTemp >= _alertSettings.StorageTempCritical)
+                    SendNotification("Storage Critical", $"Storage temp is {data.StorageCompTemp:F1}°C");
+                else if (data.StorageCompTemp >= _alertSettings.StorageTempWarning)
+                    SendNotification("Storage Warning", $"Storage temp is {data.StorageCompTemp:F1}°C");
+            }
         }
 
 
@@ -369,6 +439,9 @@ namespace hwmonitor
                 .SetField("gpu_power", data.GpuPower)
                 .SetField("gpu_memory_percent", data.GpuMemoryPercent)
                 .SetField("ram_percent", data.RamPercent)
+                .SetField("storage_temp", data.StorageCompTemp)
+                .SetField("storage_read", data.StorageReadRate)
+                .SetField("storage_write", data.StorageWriteRate)
                 .SetTimestamp(DateTime.UtcNow);
 
             await _influxClient.WritePointAsync(point);
@@ -405,6 +478,7 @@ namespace hwmonitor
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
             var settingsWindow = new SettingsWindow(_alertSettings.Clone());
+            settingsWindow.OnSettingsSaved += () => _alertSettings = AlertSettings.Load();
             settingsWindow.Closed += (s, e) => _alertSettings = AlertSettings.Load();
             settingsWindow.Show();
         }

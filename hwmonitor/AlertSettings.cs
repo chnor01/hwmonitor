@@ -25,6 +25,9 @@ namespace hwmonitor
             public float RamWarning { get; set; } = 85;
             public float RamCritical { get; set; } = 95;
 
+            public float StorageTempWarning { get; set; } = 83;
+            public float StorageTempCritical { get; set; } = 88;
+
             public bool CpuTempAlertEnabled { get; set; } = true;
             public bool CpuLoadAlertEnabled { get; set; } = true;
             public bool CpuPowerAlertEnabled { get; set; } = true;
@@ -34,6 +37,8 @@ namespace hwmonitor
             public bool GpuPowerAlertEnabled { get; set; } = true;
 
             public bool RamAlertEnabled { get; set; } = true;
+
+            public bool StorageTempAlertEnabled { get; set; } = true;
 
         public AlertSettings Clone() => new AlertSettings
         {
@@ -51,6 +56,8 @@ namespace hwmonitor
             GpuPowerCritical = GpuPowerCritical,
             RamWarning = RamWarning,
             RamCritical = RamCritical,
+            StorageTempWarning = StorageTempWarning,
+            StorageTempCritical = StorageTempCritical,
             CpuTempAlertEnabled = CpuTempAlertEnabled,
             CpuLoadAlertEnabled = CpuLoadAlertEnabled,
             CpuPowerAlertEnabled = CpuPowerAlertEnabled,
@@ -58,6 +65,7 @@ namespace hwmonitor
             GpuLoadAlertEnabled = GpuLoadAlertEnabled,
             GpuPowerAlertEnabled = GpuPowerAlertEnabled,
             RamAlertEnabled = RamAlertEnabled,
+            StorageTempAlertEnabled = StorageTempAlertEnabled,
         };
 
         private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "alertSettings.json");

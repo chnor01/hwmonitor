@@ -103,7 +103,7 @@
             <Button x:Name="CancelButton" Content="Undo" Click="Undo_Click" Width="80" Background="#2A2A2A" Foreground="White" Style="{StaticResource RoundedButton}"/>
 		</StackPanel>
 
-		<ScrollViewer>
+		<ScrollViewer Padding="0,0,10,0">
 			<StackPanel>
 				<Grid>
                     <Grid.RowDefinitions>
@@ -201,7 +201,25 @@
 					<TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding RamCritical}" Margin="4,0"/>
 				</Grid>
 
-			</StackPanel>
+                <TextBlock Text="Storage" FontSize="14" FontWeight="Bold"
+           Foreground="#db6e0f" Margin="0,0,0,8"/>
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding StorageTempAlertEnabled}" Margin="0,10"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Composite Temp (°C)"/>
+                    <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding StorageTempWarning}"  Margin="4,0"/>
+                    <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding StorageTempCritical}" Margin="4,0"/>
+                </Grid>
+
+            </StackPanel>
 		</ScrollViewer>
 	</DockPanel>
 
