@@ -123,6 +123,9 @@ namespace hwmonitor
 
         private AlertSettings _alertSettings;
 
+        private HardwareInfo _hardwareInfo;
+        public HardwareInfo HardwareInfo => _hardwareInfo;
+
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon
         {
             Visible = true,
@@ -229,7 +232,7 @@ namespace hwmonitor
             };
 
             computer.Open();
-
+            _hardwareInfo = HardwareInfo.Load(computer);
             Task.Run(() => MetricsLoop(_cts.Token));
 
         }
@@ -446,6 +449,7 @@ namespace hwmonitor
 
             await _influxClient.WritePointAsync(point);
         }
+
 
         private void addPoint(ObservableCollection<float> collection, float value)
         {

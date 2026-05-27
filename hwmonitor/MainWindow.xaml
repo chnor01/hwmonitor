@@ -109,7 +109,7 @@
 				<TextBlock Grid.Column="11" Text="{Binding RamUsedGBText}"/>
                 <Border Grid.Column="12"  Width="1" Background="#737373" Margin="8,12"/>
                 <StackPanel Grid.Column="13" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Rectangle Width="30" Height="30" Fill="#8f4a0e" Margin="0,0,6,0"/>
+                    <Rectangle Width="30" Height="30" Fill="#80410b" Margin="0,0,6,0"/>
                     <TextBlock Text="Storage" Foreground="#888888"/>
                 </StackPanel>
                 <TextBlock Grid.Column="14"  Text="{Binding StorageReadRateText}"/>
@@ -122,7 +122,7 @@
             <TabItem Header="CPU">
                 <Grid Background="#121212">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -131,7 +131,19 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#0D1B2A">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#0D1B2A" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HardwareInfo.CpuName}" Foreground="White" FontSize="14"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.CpuCores, StringFormat='{}{0} Cores'}" Foreground="#888888"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.CpuThreads, StringFormat='{}{0} Threads'}" Foreground="#888888"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.CpuBaseClock, StringFormat='{}{0} MHz'}" Foreground="#888888"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#0D1B2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Utilization"/>
@@ -141,7 +153,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#0D1B2A">
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#0D1B2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Temperature"/>
@@ -151,7 +163,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#0D1B2A">
+                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#0D1B2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Power Consumption"/>
@@ -166,7 +178,7 @@
 
                 <Grid Background="#121212">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
@@ -176,7 +188,15 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#1A0D2A" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HardwareInfo.GpuName}" Foreground="White" FontSize="14"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.GpuMemoryGB, StringFormat='{}{0}GB VRAM'}" Foreground="#888888"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Utilization"/>
@@ -186,7 +206,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Core Temperature"/>
@@ -196,7 +216,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Memory Temperature"/>
@@ -206,7 +226,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Hotspot Temperature"/>
@@ -216,7 +236,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Power Consumption"/>
@@ -226,7 +246,7 @@
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#1A0D2A">
+                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#1A0D2A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Memory Usage"/>
@@ -240,7 +260,7 @@
             <TabItem Header="Memory">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -249,7 +269,16 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#0D2A1A">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#0D2A1A" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HardwareInfo.RamGB, StringFormat='{}{0}GB'}" Foreground="White" FontSize="14"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.RamSpeed, StringFormat='{}{0} MHz'}" Foreground="#888888"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#0D2A1A">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="RAM Usage"/>
@@ -263,7 +292,7 @@
             <TabItem Header="Storage">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -272,33 +301,41 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#80410b" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HardwareInfo.StorageName}" Foreground="White" FontSize="14"/>
+                            <Border Width="1" Background="#333333" Margin="12,0"/>
+                            <TextBlock Text="{Binding HardwareInfo.StorageGB, StringFormat='{}{0:F0}GB'}" Foreground="#888888"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ChartCard}" Background="#80410b">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Read Rate"/>
                                 <TextBlock Text="{Binding StorageReadRateText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                             </DockPanel>
-                            <lvc:CartesianChart Series="{Binding StorageReadRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#8f4a0e"/>
+                            <lvc:CartesianChart Series="{Binding StorageReadRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#80410b"/>
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ChartCard}" Background="#80410b">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Write Rate"/>
                                 <TextBlock Text="{Binding StorageWriteRateText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                             </DockPanel>
-                            <lvc:CartesianChart Series="{Binding StorageWriteRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#8f4a0e"/>
+                            <lvc:CartesianChart Series="{Binding StorageWriteRateSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesReadWrite7000MBs}" Background="#80410b"/>
                         </DockPanel>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#8f4a0e">
+                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ChartCard}" Background="#80410b">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top">
                                 <TextBlock Text="Composite Temperature"/>
                                 <TextBlock Text="{Binding StorageCompTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                             </DockPanel>
-                            <lvc:CartesianChart Series="{Binding StorageCompTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesStorageTemp0to90C}" Background="#8f4a0e"/>
+                            <lvc:CartesianChart Series="{Binding StorageCompTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesStorageTemp0to90C}" Background="#80410b"/>
                         </DockPanel>
                     </Border>
                 </Grid>
