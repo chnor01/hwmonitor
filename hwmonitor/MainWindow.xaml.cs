@@ -76,8 +76,6 @@ namespace hwmonitor
         private string _storageWriteRateText = "0MB/s";
         public string StorageWriteRateText { get => _storageWriteRateText; set { _storageWriteRateText = value; OnPropertyChanged(nameof(StorageWriteRateText)); } }
 
-
-
         public ISeries[] CpuLoadSeries { get; set; }
         public ISeries[] CpuTempSeries { get; set; }
         public ISeries[] CpuPowerSeries { get; set; }
@@ -91,6 +89,11 @@ namespace hwmonitor
         public ISeries[] StorageCompTempSeries { get; set; }
         public ISeries[] StorageReadRateSeries { get; set; }
         public ISeries[] StorageWriteRateSeries { get; set; }
+
+        public ObservableCollection<AlertEntry> CpuAlerts { get; set; } = new();
+        public ObservableCollection<AlertEntry> GpuAlerts { get; set; } = new();
+        public ObservableCollection<AlertEntry> RamAlerts { get; set; } = new();
+        public ObservableCollection<AlertEntry> StorageAlerts { get; set; } = new();
 
         public Axis[] XAxes { get; set; } = new Axis[]
         {
@@ -132,7 +135,7 @@ namespace hwmonitor
             Icon = System.Drawing.SystemIcons.Information
         };
 
-        private DateTime _lastNotification = DateTime.MinValue;
+        private Dictionary<string, DateTime> _lastMetricNotifications = new Dictionary<string, DateTime>();
 
         private InfluxDBClient _influxClient;
 
@@ -366,64 +369,64 @@ namespace hwmonitor
             if (_alertSettings.CpuLoadAlertEnabled)
             {
                 if (data.CpuLoadTotal >= _alertSettings.CpuLoadCritical)
-                    SendNotification("CPU Critical", $"CPU load is {data.CpuLoadTotal:F1}%");
+                    SendNotification("CPU", "Critical", $"CPU load is {data.CpuLoadTotal:F1}%", CpuAlerts);
                 else if (data.CpuLoadTotal >= _alertSettings.CpuLoadWarning)
-                    SendNotification("CPU Warning", $"CPU load is {data.CpuLoadTotal:F1}%");
+                    SendNotification("CPU", "Warning", $"CPU load is {data.CpuLoadTotal:F1}%", CpuAlerts);
             }
             if (_alertSettings.CpuTempAlertEnabled)
             {
                 if (data.CpuTemp >= _alertSettings.CpuTempCritical)
-                    SendNotification("CPU Critical", $"CPU temp is {data.CpuTemp:F1}°C");
+                    SendNotification("CPU", "Critical", $"CPU temp is {data.CpuTemp:F1}°C", CpuAlerts);
                 else if (data.CpuTemp >= _alertSettings.CpuTempWarning)
-                    SendNotification("CPU Warning", $"CPU temp is {data.CpuTemp:F1}°C");
+                    SendNotification("CPU", "Warning", $"CPU temp is {data.CpuTemp:F1}°C", CpuAlerts);
             }
 
             if (_alertSettings.CpuPowerAlertEnabled)
             {
                 if (data.CpuPower >= _alertSettings.CpuPowerCritical)
-                    SendNotification("CPU Critical", $"CPU power is {data.CpuPower:F1}W");
+                    SendNotification("CPU", "Critical", $"CPU power is {data.CpuPower:F1}W", CpuAlerts);
                 else if (data.CpuPower >= _alertSettings.CpuPowerWarning)
-                    SendNotification("CPU Warning", $"CPU power is {data.CpuPower:F1}W");
+                    SendNotification("CPU", "Warning", $"CPU power is {data.CpuPower:F1}W", CpuAlerts);
             }
 
             if (_alertSettings.GpuLoadAlertEnabled)
             {
                 if (data.GpuCoreLoad >= _alertSettings.GpuLoadCritical)
-                    SendNotification("GPU Critical", $"GPU load is {data.GpuCoreLoad:F1}%");
+                    SendNotification("GPU", "Critical", $"GPU load is {data.GpuCoreLoad:F1}%", GpuAlerts);
                 else if (data.GpuCoreLoad >= _alertSettings.GpuLoadWarning)
-                    SendNotification("GPU Warning", $"GPU load is {data.GpuCoreLoad:F1}%");
+                    SendNotification("GPU", "Warning", $"GPU load is {data.GpuCoreLoad:F1}%", GpuAlerts);
             }
 
             if (_alertSettings.GpuTempAlertEnabled)
             {
                 if (data.GpuCoreTemp >= _alertSettings.GpuTempCritical)
-                    SendNotification("GPU Critical", $"GPU temp is {data.GpuCoreTemp:F1}°C");
+                    SendNotification("GPU", "Critical", $"GPU temp is {data.GpuCoreTemp:F1}°C", GpuAlerts);
                 else if (data.GpuCoreTemp >= _alertSettings.GpuTempWarning)
-                    SendNotification("GPU Warning", $"GPU temp is {data.GpuCoreTemp:F1}°C");
+                    SendNotification("GPU", "Warning", $"GPU temp is {data.GpuCoreTemp:F1}°C", GpuAlerts);
             }
 
             if (_alertSettings.GpuPowerAlertEnabled)
             {
                 if (data.GpuPower >= _alertSettings.GpuPowerCritical)
-                    SendNotification("GPU Critical", $"GPU power is {data.GpuPower:F1}W");
+                    SendNotification("GPU", "Critical", $"GPU power is {data.GpuPower:F1}W", GpuAlerts);
                 else if (data.GpuPower >= _alertSettings.GpuPowerWarning)
-                    SendNotification("GPU Warning", $"GPU power is {data.GpuPower:F1}W");
+                    SendNotification("GPU", "Warning", $"GPU power is {data.GpuPower:F1}W", GpuAlerts);
             }
 
             if (_alertSettings.RamAlertEnabled)
             {
                 if (data.RamPercent >= _alertSettings.RamCritical)
-                    SendNotification("RAM Critical", $"RAM usage is {data.RamPercent:F1}%");
+                    SendNotification("RAM", "Critical", $"RAM usage is {data.RamPercent:F1}%", RamAlerts);
                 else if (data.RamPercent >= _alertSettings.RamWarning)
-                    SendNotification("RAM Warning", $"RAM usage is {data.RamPercent:F1}%");
+                    SendNotification("RAM", "Warning", $"RAM usage is {data.RamPercent:F1}%", RamAlerts);
             }
 
             if (_alertSettings.StorageTempAlertEnabled)
             {
                 if (data.StorageCompTemp >= _alertSettings.StorageTempCritical)
-                    SendNotification("Storage Critical", $"Storage temp is {data.StorageCompTemp:F1}°C");
+                    SendNotification("Storage", "Critical", $"Storage temp is {data.StorageCompTemp:F1}°C", StorageAlerts);
                 else if (data.StorageCompTemp >= _alertSettings.StorageTempWarning)
-                    SendNotification("Storage Warning", $"Storage temp is {data.StorageCompTemp:F1}°C");
+                    SendNotification("Storage", "Warning", $"Storage temp is {data.StorageCompTemp:F1}°C", StorageAlerts);
             }
         }
 
@@ -466,17 +469,27 @@ namespace hwmonitor
             base.OnClosed(e);
         }
 
-        private void SendNotification(string title, string message)
+        private void SendNotification(string hardwareType, string title, string message, ObservableCollection<AlertEntry> alerts)
         {
-            if ((DateTime.UtcNow - _lastNotification).TotalSeconds < 30)
-                return;
-
+            if (_lastMetricNotifications.TryGetValue(hardwareType, out DateTime lastTime))
+            {
+                if ((DateTime.UtcNow - lastTime).TotalSeconds < 30)
+                    return;
+            }
             _notifyIcon.BalloonTipTitle = title;
             _notifyIcon.BalloonTipText = message;
             _notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Warning;
-            _notifyIcon.ShowBalloonTip(3000);
+            //_notifyIcon.ShowBalloonTip(2000);
 
-            _lastNotification = DateTime.UtcNow;
+            _lastMetricNotifications[hardwareType] = DateTime.UtcNow;
+
+            alerts.Insert(0, new AlertEntry
+            {
+                Time = DateTime.UtcNow.ToString("HH:mm:ss"),
+                Title = title,
+                Message = message,
+                Color = title.Contains("Critical") ? "#d61313" : "#d47d0d"
+            });
         }
 
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)

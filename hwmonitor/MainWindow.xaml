@@ -56,6 +56,29 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Track Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#444444" CornerRadius="3"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
 
@@ -124,6 +147,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="150"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -172,6 +196,26 @@
                             <lvc:CartesianChart Series="{Binding CpuPowerSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to160Watts}" Background="#0D1B2A"/>
                         </DockPanel>
                     </Border>
+                    <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                            </DockPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding CpuAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Margin="0,3">
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70"/>
+                                                <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
                 </Grid>
             </TabItem>
             <TabItem Header="GPU">
@@ -181,6 +225,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="150"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -255,6 +300,26 @@
                             <lvc:CartesianChart Series="{Binding GpuMemoryUsageSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#1A0D2A"/>
                         </DockPanel>
                     </Border>
+                    <Border Grid.Row="3" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                            </DockPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding GpuAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Margin="0,3">
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
                 </Grid>
             </TabItem>
             <TabItem Header="Memory">
@@ -262,6 +327,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="150"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -287,6 +353,26 @@
                             <lvc:CartesianChart Series="{Binding RamSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes0to100Percent}" Background="#0D2A1A"/>
                         </DockPanel>
                     </Border>
+                    <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                            </DockPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding RamAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Margin="0,3">
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
                 </Grid>
             </TabItem>
             <TabItem Header="Storage">
@@ -294,6 +380,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="150"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -336,6 +423,26 @@
                                 <TextBlock Text="{Binding StorageCompTempText}" DockPanel.Dock="Right" HorizontalAlignment="Right" FontSize="20" FontWeight="Normal" Foreground="LightGray"/>
                             </DockPanel>
                             <lvc:CartesianChart Series="{Binding StorageCompTempSeries}" XAxes="{Binding XAxes}" YAxes="{Binding YAxesStorageTemp0to90C}" Background="#80410b"/>
+                        </DockPanel>
+                    </Border>
+                    <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                            </DockPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding StorageAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Margin="0,3">
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
                         </DockPanel>
                     </Border>
                 </Grid>
