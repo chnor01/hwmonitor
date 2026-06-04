@@ -500,5 +500,11 @@ namespace hwmonitor
             settingsWindow.Show();
         }
 
+        private void ClearCpuAlerts(object sender, RoutedEventArgs e) => CpuAlerts.Clear();
+        private void ClearGpuAlerts(object sender, RoutedEventArgs e) => GpuAlerts.Clear();
+        private void ClearRamAlerts(object sender, RoutedEventArgs e) => RamAlerts.Clear();
+        private void ClearStorageAlerts(object sender, RoutedEventArgs e) => StorageAlerts.Clear();
+
+
     }
 }

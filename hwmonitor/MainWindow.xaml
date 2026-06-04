@@ -198,8 +198,9 @@
                     </Border>
                     <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
                                 <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                                <Button Content="Clear" Click="ClearCpuAlerts" DockPanel.Dock="Right" Padding="8,2" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding CpuAlerts}">
@@ -302,8 +303,9 @@
                     </Border>
                     <Border Grid.Row="3" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
                                 <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                                <Button Content="Clear" Click="ClearGpuAlerts" DockPanel.Dock="Right" Padding="8,2" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding GpuAlerts}">
@@ -355,8 +357,9 @@
                     </Border>
                     <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
                                 <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                                <Button Content="Clear" Click="ClearRamAlerts" DockPanel.Dock="Right" Padding="8,2" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding RamAlerts}">
@@ -427,8 +430,9 @@
                     </Border>
                     <Border Grid.Row="2" Grid.ColumnSpan="1" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
                                 <TextBlock Text="Alerts" FontSize="13" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
+                                <Button Content="Clear" Click="ClearStorageAlerts" DockPanel.Dock="Right" Padding="8,2" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding StorageAlerts}">

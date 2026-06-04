@@ -21,47 +21,30 @@
 			<Setter Property="Padding" Value="4"/>
 			<Setter Property="Width" Value="60"/>
 		</Style>
-		<Style TargetType="ScrollBar">
-			<Setter Property="Width" Value="6"/>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="ScrollBar">
-						<Grid>
-							<Track Name="PART_Track" IsDirectionReversed="True">
-								<Track.Thumb>
-									<Thumb>
-										<Thumb.Template>
-											<ControlTemplate TargetType="Thumb">
-												<Border Background="#444444" CornerRadius="3"/>
-											</ControlTemplate>
-										</Thumb.Template>
-									</Thumb>
-								</Track.Thumb>
-							</Track>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style TargetType="Button" x:Key="RoundedButton">
-			<Setter Property="Height" Value="20"/>
-			<Setter Property="FontFamily" Value="Segoe UI"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="FontSize" Value="13"/>
-			<Setter Property="Cursor" Value="Hand"/>
-			<Setter Property="BorderBrush" Value="Transparent"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border Background="{TemplateBinding Background}" CornerRadius="5">
-							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						</Border>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style TargetType="CheckBox">
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Track Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#444444" CornerRadius="3"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="CheckBox">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Margin" Value="0,0,8,0"/>
 			<Setter Property="Template">
@@ -99,8 +82,8 @@
 
 	<DockPanel Margin="10">
 		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="SaveButton" Content="Save" Click="Save_Click" Width="80" Background="#4A90D9" Foreground="White" Style="{StaticResource RoundedButton}" Margin="0,0,8,0"/>
-            <Button x:Name="CancelButton" Content="Undo" Click="Undo_Click" Width="80" Background="#2A2A2A" Foreground="White" Style="{StaticResource RoundedButton}"/>
+            <Button x:Name="SaveButton" Content="Save" Click="Save_Click" Width="80" Background="#4A90D9" Foreground="White" BorderBrush="Transparent" Margin="0,0,8,0"/>
+            <Button x:Name="CancelButton" Content="Undo" Click="Undo_Click" Width="80" Background="#2A2A2A" Foreground="White" BorderBrush="Transparent"/>
 		</StackPanel>
 
 		<ScrollViewer Padding="0,0,10,0">
