@@ -127,7 +127,11 @@ namespace hwmonitor
         private AlertSettings _alertSettings;
 
         private HardwareInfo _hardwareInfo;
+
         public HardwareInfo HardwareInfo => _hardwareInfo;
+
+        private SessionStats _sessionStats = new SessionStats();
+        public SessionStats SessionStats => _sessionStats;
 
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon
         {
@@ -358,6 +362,7 @@ namespace hwmonitor
             StorageReadRateText = $"{data.StorageReadRate:F1}MB/s";
             StorageWriteRateText = $"{data.StorageWriteRate:F1}MB/s";
 
+            _sessionStats.Update(data);
             CheckAlerts(data);
 
             //_ = WriteMetricsToInflux(data);
@@ -369,48 +374,48 @@ namespace hwmonitor
             if (_alertSettings.CpuLoadAlertEnabled)
             {
                 if (data.CpuLoadTotal >= _alertSettings.CpuLoadCritical)
-                    SendNotification("CPU", "Critical", $"CPU load is {data.CpuLoadTotal:F1}%", CpuAlerts);
+                    SendNotification("CPU", "Critical", $"CPU utilization is {data.CpuLoadTotal:F1}%", CpuAlerts);
                 else if (data.CpuLoadTotal >= _alertSettings.CpuLoadWarning)
-                    SendNotification("CPU", "Warning", $"CPU load is {data.CpuLoadTotal:F1}%", CpuAlerts);
+                    SendNotification("CPU", "Warning", $"CPU utilization is {data.CpuLoadTotal:F1}%", CpuAlerts);
             }
             if (_alertSettings.CpuTempAlertEnabled)
             {
                 if (data.CpuTemp >= _alertSettings.CpuTempCritical)
-                    SendNotification("CPU", "Critical", $"CPU temp is {data.CpuTemp:F1}°C", CpuAlerts);
+                    SendNotification("CPU", "Critical", $"CPU temperature is {data.CpuTemp:F1}°C", CpuAlerts);
                 else if (data.CpuTemp >= _alertSettings.CpuTempWarning)
-                    SendNotification("CPU", "Warning", $"CPU temp is {data.CpuTemp:F1}°C", CpuAlerts);
+                    SendNotification("CPU", "Warning", $"CPU temperature is {data.CpuTemp:F1}°C", CpuAlerts);
             }
 
             if (_alertSettings.CpuPowerAlertEnabled)
             {
                 if (data.CpuPower >= _alertSettings.CpuPowerCritical)
-                    SendNotification("CPU", "Critical", $"CPU power is {data.CpuPower:F1}W", CpuAlerts);
+                    SendNotification("CPU", "Critical", $"CPU power consumption is {data.CpuPower:F1}W", CpuAlerts);
                 else if (data.CpuPower >= _alertSettings.CpuPowerWarning)
-                    SendNotification("CPU", "Warning", $"CPU power is {data.CpuPower:F1}W", CpuAlerts);
+                    SendNotification("CPU", "Warning", $"CPU power consumption is {data.CpuPower:F1}W", CpuAlerts);
             }
 
             if (_alertSettings.GpuLoadAlertEnabled)
             {
                 if (data.GpuCoreLoad >= _alertSettings.GpuLoadCritical)
-                    SendNotification("GPU", "Critical", $"GPU load is {data.GpuCoreLoad:F1}%", GpuAlerts);
+                    SendNotification("GPU", "Critical", $"GPU utilization is {data.GpuCoreLoad:F1}%", GpuAlerts);
                 else if (data.GpuCoreLoad >= _alertSettings.GpuLoadWarning)
-                    SendNotification("GPU", "Warning", $"GPU load is {data.GpuCoreLoad:F1}%", GpuAlerts);
+                    SendNotification("GPU", "Warning", $"GPU utilization is {data.GpuCoreLoad:F1}%", GpuAlerts);
             }
 
             if (_alertSettings.GpuTempAlertEnabled)
             {
                 if (data.GpuCoreTemp >= _alertSettings.GpuTempCritical)
-                    SendNotification("GPU", "Critical", $"GPU temp is {data.GpuCoreTemp:F1}°C", GpuAlerts);
+                    SendNotification("GPU", "Critical", $"GPU temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
                 else if (data.GpuCoreTemp >= _alertSettings.GpuTempWarning)
-                    SendNotification("GPU", "Warning", $"GPU temp is {data.GpuCoreTemp:F1}°C", GpuAlerts);
+                    SendNotification("GPU", "Warning", $"GPU temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
             }
 
             if (_alertSettings.GpuPowerAlertEnabled)
             {
                 if (data.GpuPower >= _alertSettings.GpuPowerCritical)
-                    SendNotification("GPU", "Critical", $"GPU power is {data.GpuPower:F1}W", GpuAlerts);
+                    SendNotification("GPU", "Critical", $"GPU power consumption is {data.GpuPower:F1}W", GpuAlerts);
                 else if (data.GpuPower >= _alertSettings.GpuPowerWarning)
-                    SendNotification("GPU", "Warning", $"GPU power is {data.GpuPower:F1}W", GpuAlerts);
+                    SendNotification("GPU", "Warning", $"GPU power consumption is {data.GpuPower:F1}W", GpuAlerts);
             }
 
             if (_alertSettings.RamAlertEnabled)
@@ -424,9 +429,9 @@ namespace hwmonitor
             if (_alertSettings.StorageTempAlertEnabled)
             {
                 if (data.StorageCompTemp >= _alertSettings.StorageTempCritical)
-                    SendNotification("Storage", "Critical", $"Storage temp is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                    SendNotification("Storage", "Critical", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
                 else if (data.StorageCompTemp >= _alertSettings.StorageTempWarning)
-                    SendNotification("Storage", "Warning", $"Storage temp is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                    SendNotification("Storage", "Warning", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
             }
         }
 
@@ -473,13 +478,9 @@ namespace hwmonitor
         {
             if (_lastMetricNotifications.TryGetValue(hardwareType, out DateTime lastTime))
             {
-                if ((DateTime.UtcNow - lastTime).TotalSeconds < 30)
+                if ((DateTime.UtcNow - lastTime).TotalSeconds < 10)
                     return;
             }
-            _notifyIcon.BalloonTipTitle = title;
-            _notifyIcon.BalloonTipText = message;
-            _notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Warning;
-            //_notifyIcon.ShowBalloonTip(2000);
 
             _lastMetricNotifications[hardwareType] = DateTime.UtcNow;
 
@@ -491,6 +492,8 @@ namespace hwmonitor
                 Color = title.Contains("Critical") ? "#d61313" : "#d47d0d"
             });
         }
+
+
 
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
