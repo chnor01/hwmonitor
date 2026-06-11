@@ -147,6 +147,8 @@ namespace hwmonitor
 
         private const int MaxPoints = 60;
 
+        private const int MaxAlerts = 20;
+
         Computer computer = new Computer
         {
             IsCpuEnabled = true,
@@ -491,6 +493,9 @@ namespace hwmonitor
                 Message = message,
                 Color = title.Contains("Critical") ? "#d61313" : "#d47d0d"
             });
+
+            if (alerts.Count > MaxAlerts)
+                alerts.RemoveAt(alerts.Count - 1);
         }
 
 

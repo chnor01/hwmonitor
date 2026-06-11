@@ -90,51 +90,39 @@
 
         <Border Grid.Row="0" Background="#2A2A2A">
 			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-				<StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
-					<Rectangle Width="30" Height="30" Fill="#0D1B2A" Margin="0,0,6,0"/>
-					<TextBlock Text="CPU" Foreground="#888888"/>
-				</StackPanel>
-				<TextBlock Grid.Column="1"  Text="{Binding CpuLoadText}"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="CPU" Foreground="#888888"/>
+                <TextBlock Grid.Column="1"  Text="{Binding CpuLoadText}"/>
 				<TextBlock Grid.Column="2"  Text="{Binding CpuTempText}"/>
 				<TextBlock Grid.Column="3"  Text="{Binding CpuPowerText}"/>
                 <Border Grid.Column="4"  Width="1" Background="#737373" Margin="8,12"/>
-				<StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
-					<Rectangle Width="30" Height="30" Fill="#1A0D2A" Margin="0,0,6,0"/>
-					<TextBlock Text="GPU" Foreground="#888888"/>
-				</StackPanel>
-				<TextBlock Grid.Column="6"  Text="{Binding GpuCoreLoadText}"/>
+                <TextBlock Grid.Column="5" Text="GPU" Foreground="#888888"/>
+                <TextBlock Grid.Column="6"  Text="{Binding GpuCoreLoadText}"/>
 				<TextBlock Grid.Column="7"  Text="{Binding GpuCoreTempText}"/>
 				<TextBlock Grid.Column="8"  Text="{Binding GpuPowerText}"/>
-				<Border Grid.Column="9"  Width="1" Background="#737373" Margin="8,12"/>
-				<StackPanel Grid.Column="10" Orientation="Horizontal" HorizontalAlignment="Center">
-					<Rectangle Width="30" Height="30" Fill="#0D2A1A" Margin="0,0,6,0"/>
-					<TextBlock Text="RAM" Foreground="#888888"/>
-				</StackPanel>
-				<TextBlock Grid.Column="11" Text="{Binding RamUsedGBText}"/>
+                <Border Grid.Column="9"  Width="1" Background="#737373" Margin="8,12"/>
+                <TextBlock Grid.Column="10" Text="RAM" Foreground="#888888"/>
+                <TextBlock Grid.Column="11" Text="{Binding RamUsedGBText}"/>
                 <Border Grid.Column="12"  Width="1" Background="#737373" Margin="8,12"/>
-                <StackPanel Grid.Column="13" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Rectangle Width="30" Height="30" Fill="#80410b" Margin="0,0,6,0"/>
-                    <TextBlock Text="Storage" Foreground="#888888"/>
-                </StackPanel>
+                <TextBlock Grid.Column="13" Text="Storage" Foreground="#888888"/>
                 <TextBlock Grid.Column="14"  Text="{Binding StorageReadRateText}"/>
                 <TextBlock Grid.Column="15"  Text="{Binding StorageWriteRateText}"/>
                 <Button Grid.Column="16" Content="⚙" Click="OpenSettingsWindow" Background="DimGray" BorderBrush="Transparent" Foreground="LightGray" Cursor="Hand"/>
@@ -155,7 +143,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.ColumnSpan="4" Background="#0D1B2A" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#0D1B2A" Margin="8,8,8,0" CornerRadius="10" Padding="16,10">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding HardwareInfo.CpuName}" Foreground="White" FontSize="14"/>
                             <Border Width="1" Background="#333333" Margin="12,0"/>
@@ -220,45 +208,43 @@
 
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
                                 <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Utilization" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CpuLoadMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.CpuLoadMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.CpuLoadAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Utilization" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CpuLoadMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.CpuLoadMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.CpuLoadAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.CpuTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SessionStats.CpuTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SessionStats.CpuTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.CpuTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SessionStats.CpuTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SessionStats.CpuTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Power Consumption" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SessionStats.CpuPowerMin, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SessionStats.CpuPowerMax, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SessionStats.CpuPowerAvg, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
-                                </Grid>
-                            </ScrollViewer>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Power Consumption" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SessionStats.CpuPowerMin, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SessionStats.CpuPowerMax, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SessionStats.CpuPowerAvg, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                            </Grid>
                         </DockPanel>
                     </Border>
                     
@@ -370,63 +356,61 @@
 
                     <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
                                 <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Utilization" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.GpuLoadMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.GpuLoadMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.GpuLoadAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Utilization" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.GpuLoadMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.GpuLoadMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.GpuLoadAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Core Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.GpuCoreTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SessionStats.GpuCoreTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SessionStats.GpuCoreTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Core Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.GpuCoreTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SessionStats.GpuCoreTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SessionStats.GpuCoreTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Memory Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SessionStats.GpuMemoryTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SessionStats.GpuMemoryTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SessionStats.GpuMemoryTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Memory Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SessionStats.GpuMemoryTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SessionStats.GpuMemoryTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SessionStats.GpuMemoryTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Hotspot Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SessionStats.GpuHotspotTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding SessionStats.GpuHotspotTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="4" Grid.Column="3" Text="{Binding SessionStats.GpuHotspotTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Hotspot Temperature" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SessionStats.GpuHotspotTempMin, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding SessionStats.GpuHotspotTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="4" Grid.Column="3" Text="{Binding SessionStats.GpuHotspotTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Power Consumption" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SessionStats.GpuPowerMin, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding SessionStats.GpuPowerMax, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="5" Grid.Column="3" Text="{Binding SessionStats.GpuPowerAvg, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Power Consumption" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SessionStats.GpuPowerMin, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding SessionStats.GpuPowerMax, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="5" Grid.Column="3" Text="{Binding SessionStats.GpuPowerAvg, StringFormat='{}{0:F1}W'}" Foreground="White" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Memory Usage" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SessionStats.GpuMemoryMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding SessionStats.GpuMemoryMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="6" Grid.Column="3" Text="{Binding SessionStats.GpuMemoryAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                </Grid>
-                            </ScrollViewer>
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Memory Usage" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SessionStats.GpuMemoryMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding SessionStats.GpuMemoryMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="6" Grid.Column="3" Text="{Binding SessionStats.GpuMemoryAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                            </Grid>
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -485,35 +469,33 @@
                     </Border>
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
                                 <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Metric" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Low" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="High" Foreground="#555555" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="3" Text="Average" Foreground="#555555" FontSize="16"></TextBlock>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="RAM Usage" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.RamMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.RamMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.RamAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
-                                </Grid>
-                            </ScrollViewer>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="RAM Usage" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="#888888" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.RamMin, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SessionStats.RamMax, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SessionStats.RamAvg, StringFormat='{}{0:F1}%'}" Foreground="White" FontSize="16"></TextBlock>
+                            </Grid>
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -591,12 +573,11 @@
                     </Border>
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8" LastChildFill="False">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
                                 <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <Grid>
+                            <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"></RowDefinition>
                                         <RowDefinition Height="*"></RowDefinition>
@@ -629,11 +610,9 @@
                                     <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SessionStats.StorageTempMax, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
                                     <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SessionStats.StorageTempAvg, StringFormat='{}{0:F1}°C'}" Foreground="White" FontSize="16"></TextBlock>
                                 </Grid>
-                            </ScrollViewer>
                         </DockPanel>
                     </Border>
                 </Grid>
-                
             </TabItem>
         </TabControl>
     </Grid>
