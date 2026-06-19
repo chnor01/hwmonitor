@@ -9,6 +9,7 @@ namespace hwmonitor
 {
     public class HardwareInfo
     {
+        // variables for static hardware info
         public string CpuName { get; set; } = "";
         public int CpuCores { get; set; }
         public int CpuThreads { get; set; }
@@ -23,6 +24,8 @@ namespace hwmonitor
         public string StorageName { get; set; } = "";
         public int StorageGB { get; set; }
 
+
+        // load static hardware info
         public static HardwareInfo Load(Computer computer)
         {
             var info = new HardwareInfo();

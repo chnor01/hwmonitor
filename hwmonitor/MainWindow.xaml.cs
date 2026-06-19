@@ -22,6 +22,7 @@ namespace hwmonitor
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
+        // collections storing hardware sensordata, for metrics charts.
         private ObservableCollection<float> _cpuLoadTotal = new();
         private ObservableCollection<float> _cpuTemp = new();
         private ObservableCollection<float> _cpuPower = new();
@@ -36,7 +37,7 @@ namespace hwmonitor
         private ObservableCollection<float> _storageReadRate = new();
         private ObservableCollection<float> _storageWriteRate = new();
 
-
+        // strings for metrics, displayed in main window on each chart
         private string _cpuLoadText = "0%";
         public string CpuLoadText { get => _cpuLoadText; set { _cpuLoadText = value; OnPropertyChanged(nameof(CpuLoadText)); } }
 
@@ -76,6 +77,7 @@ namespace hwmonitor
         private string _storageWriteRateText = "0MB/s";
         public string StorageWriteRateText { get => _storageWriteRateText; set { _storageWriteRateText = value; OnPropertyChanged(nameof(StorageWriteRateText)); } }
 
+        // all metrics charts
         public ISeries[] CpuLoadSeries { get; set; }
         public ISeries[] CpuTempSeries { get; set; }
         public ISeries[] CpuPowerSeries { get; set; }
@@ -90,11 +92,13 @@ namespace hwmonitor
         public ISeries[] StorageReadRateSeries { get; set; }
         public ISeries[] StorageWriteRateSeries { get; set; }
 
+        // alert collections
         public ObservableCollection<AlertEntry> CpuAlerts { get; set; } = new();
         public ObservableCollection<AlertEntry> GpuAlerts { get; set; } = new();
         public ObservableCollection<AlertEntry> RamAlerts { get; set; } = new();
         public ObservableCollection<AlertEntry> StorageAlerts { get; set; } = new();
 
+        // axes for charts
         public Axis[] XAxes { get; set; } = new Axis[]
         {
             new Axis { MinLimit = 0, MaxLimit = 60, Labeler = value => $"{value}s", ForceStepToMin = true, MinStep = 15, IsVisible = false }
@@ -124,7 +128,7 @@ namespace hwmonitor
             new Axis { MinLimit = 0, MaxLimit = 90, Labeler = value => $"{value}°C", ForceStepToMin = true, MinStep = 25, IsVisible = false }
         };
 
-        private AlertSettings _alertSettings;
+        private AppSettings _appSettings;
 
         private HardwareInfo _hardwareInfo;
 
@@ -133,11 +137,9 @@ namespace hwmonitor
         private SessionStats _sessionStats = new SessionStats();
         public SessionStats SessionStats => _sessionStats;
 
-        private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon
-        {
-            Visible = true,
-            Icon = System.Drawing.SystemIcons.Information
-        };
+        private DispatcherTimer _sessionTimer;
+        private DateTime _sessionStart;
+        public string SessionTime => (DateTime.Now - _sessionStart).ToString(@"hh\:mm\:ss");
 
         private Dictionary<string, DateTime> _lastMetricNotifications = new Dictionary<string, DateTime>();
 
@@ -145,10 +147,16 @@ namespace hwmonitor
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
+        // max points per chart
         private const int MaxPoints = 60;
 
+        // max amount of alerts per hardware type
         private const int MaxAlerts = 20;
 
+        // time in seconds between each alert
+        private const int AlertWaitSeconds = 10;
+
+        // instance to fetch the metrics
         Computer computer = new Computer
         {
             IsCpuEnabled = true,
@@ -160,9 +168,12 @@ namespace hwmonitor
             IsMotherboardEnabled = false,
         };
 
-
         public MainWindow()
         {
+            InitializeComponent();
+            DataContext = this;
+
+            // env variables for influxdb
             var host = Environment.GetEnvironmentVariable("INFLUXDB3_HOST")
                 ?? throw new InvalidOperationException("INFLUXDB3_HOST is not set");
             var token = Environment.GetEnvironmentVariable("INFLUXDB3_AUTH_TOKEN")
@@ -171,9 +182,11 @@ namespace hwmonitor
 
             _influxClient = new InfluxDBClient(host: host, token: token, database: database);
 
-            InitializeComponent();
-            DataContext = this;
-            _alertSettings = AlertSettings.Load();
+            StartSessionTimer();
+            _appSettings = AppSettings.Load();
+            computer.Open();
+            _hardwareInfo = HardwareInfo.Load(computer);
+            Task.Run(() => MetricsLoop(_cts.Token));
 
             CpuLoadSeries = new ISeries[]
             {
@@ -240,22 +253,28 @@ namespace hwmonitor
                 new LineSeries<float> { Values = _storageWriteRate, Name = "Storage Write Rate", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}MB/s"}
             };
 
-            computer.Open();
-            _hardwareInfo = HardwareInfo.Load(computer);
-            Task.Run(() => MetricsLoop(_cts.Token));
-
         }
 
+        private void StartSessionTimer()
+        {
+            _sessionStart = DateTime.Now;
+            _sessionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            _sessionTimer.Tick += (s, e) => OnPropertyChanged(nameof(SessionTime));
+            _sessionTimer.Start();
+        }
+
+        // periodically fetch sensordata and update the mainwindow UI
         private async Task MetricsLoop(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 var data = await Task.Run(() => ReadSensors(), token);
                 Dispatcher.Invoke(() => UpdateUI(data));
-                await Task.Delay(1000, token);
+                await Task.Delay(_appSettings.PollingIntervalMs, token);
             }
         }
 
+        // fetch sensordata
         private SensorData ReadSensors()
         {
             var data = new SensorData();
@@ -332,6 +351,15 @@ namespace hwmonitor
 
         }
 
+        // add a sensordata point to its collection
+        private void addPoint(ObservableCollection<float> collection, float value)
+        {
+            collection.Add(value);
+            if (collection.Count > MaxPoints)
+                collection.Clear();
+        }
+
+        // add all fetched sensordata to their respective collection and update the metrics UI text strings
         private void UpdateUI(SensorData data)
         {
             addPoint(_cpuLoadTotal, data.CpuLoadTotal);
@@ -371,73 +399,74 @@ namespace hwmonitor
 
         }
 
+        // check if sensordata is above alert settings warning/critical thresholds. send alerts if true
         private void CheckAlerts(SensorData data)
         {
-            if (_alertSettings.CpuLoadAlertEnabled)
+            if (_appSettings.CpuLoadAlertEnabled)
             {
-                if (data.CpuLoadTotal >= _alertSettings.CpuLoadCritical)
+                if (data.CpuLoadTotal >= _appSettings.CpuLoadCritical)
                     SendNotification("CPU", "Critical", $"CPU utilization is {data.CpuLoadTotal:F1}%", CpuAlerts);
-                else if (data.CpuLoadTotal >= _alertSettings.CpuLoadWarning)
+                else if (data.CpuLoadTotal >= _appSettings.CpuLoadWarning)
                     SendNotification("CPU", "Warning", $"CPU utilization is {data.CpuLoadTotal:F1}%", CpuAlerts);
             }
-            if (_alertSettings.CpuTempAlertEnabled)
+            if (_appSettings.CpuTempAlertEnabled)
             {
-                if (data.CpuTemp >= _alertSettings.CpuTempCritical)
+                if (data.CpuTemp >= _appSettings.CpuTempCritical)
                     SendNotification("CPU", "Critical", $"CPU temperature is {data.CpuTemp:F1}°C", CpuAlerts);
-                else if (data.CpuTemp >= _alertSettings.CpuTempWarning)
+                else if (data.CpuTemp >= _appSettings.CpuTempWarning)
                     SendNotification("CPU", "Warning", $"CPU temperature is {data.CpuTemp:F1}°C", CpuAlerts);
             }
 
-            if (_alertSettings.CpuPowerAlertEnabled)
+            if (_appSettings.CpuPowerAlertEnabled)
             {
-                if (data.CpuPower >= _alertSettings.CpuPowerCritical)
+                if (data.CpuPower >= _appSettings.CpuPowerCritical)
                     SendNotification("CPU", "Critical", $"CPU power consumption is {data.CpuPower:F1}W", CpuAlerts);
-                else if (data.CpuPower >= _alertSettings.CpuPowerWarning)
+                else if (data.CpuPower >= _appSettings.CpuPowerWarning)
                     SendNotification("CPU", "Warning", $"CPU power consumption is {data.CpuPower:F1}W", CpuAlerts);
             }
 
-            if (_alertSettings.GpuLoadAlertEnabled)
+            if (_appSettings.GpuLoadAlertEnabled)
             {
-                if (data.GpuCoreLoad >= _alertSettings.GpuLoadCritical)
+                if (data.GpuCoreLoad >= _appSettings.GpuLoadCritical)
                     SendNotification("GPU", "Critical", $"GPU utilization is {data.GpuCoreLoad:F1}%", GpuAlerts);
-                else if (data.GpuCoreLoad >= _alertSettings.GpuLoadWarning)
+                else if (data.GpuCoreLoad >= _appSettings.GpuLoadWarning)
                     SendNotification("GPU", "Warning", $"GPU utilization is {data.GpuCoreLoad:F1}%", GpuAlerts);
             }
 
-            if (_alertSettings.GpuTempAlertEnabled)
+            if (_appSettings.GpuTempAlertEnabled)
             {
-                if (data.GpuCoreTemp >= _alertSettings.GpuTempCritical)
-                    SendNotification("GPU", "Critical", $"GPU temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
-                else if (data.GpuCoreTemp >= _alertSettings.GpuTempWarning)
-                    SendNotification("GPU", "Warning", $"GPU temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
+                if (data.GpuCoreTemp >= _appSettings.GpuTempCritical)
+                    SendNotification("GPU", "Critical", $"GPU core temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
+                else if (data.GpuCoreTemp >= _appSettings.GpuTempWarning)
+                    SendNotification("GPU", "Warning", $"GPU core temperature is {data.GpuCoreTemp:F1}°C", GpuAlerts);
             }
 
-            if (_alertSettings.GpuPowerAlertEnabled)
+            if (_appSettings.GpuPowerAlertEnabled)
             {
-                if (data.GpuPower >= _alertSettings.GpuPowerCritical)
+                if (data.GpuPower >= _appSettings.GpuPowerCritical)
                     SendNotification("GPU", "Critical", $"GPU power consumption is {data.GpuPower:F1}W", GpuAlerts);
-                else if (data.GpuPower >= _alertSettings.GpuPowerWarning)
+                else if (data.GpuPower >= _appSettings.GpuPowerWarning)
                     SendNotification("GPU", "Warning", $"GPU power consumption is {data.GpuPower:F1}W", GpuAlerts);
             }
 
-            if (_alertSettings.RamAlertEnabled)
+            if (_appSettings.RamAlertEnabled)
             {
-                if (data.RamPercent >= _alertSettings.RamCritical)
+                if (data.RamPercent >= _appSettings.RamCritical)
                     SendNotification("RAM", "Critical", $"RAM usage is {data.RamPercent:F1}%", RamAlerts);
-                else if (data.RamPercent >= _alertSettings.RamWarning)
+                else if (data.RamPercent >= _appSettings.RamWarning)
                     SendNotification("RAM", "Warning", $"RAM usage is {data.RamPercent:F1}%", RamAlerts);
             }
 
-            if (_alertSettings.StorageTempAlertEnabled)
+            if (_appSettings.StorageTempAlertEnabled)
             {
-                if (data.StorageCompTemp >= _alertSettings.StorageTempCritical)
-                    SendNotification("Storage", "Critical", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
-                else if (data.StorageCompTemp >= _alertSettings.StorageTempWarning)
-                    SendNotification("Storage", "Warning", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                if (data.StorageCompTemp >= _appSettings.StorageTempCritical)
+                    SendNotification("Storage", "Critical", $"Storage composite temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                else if (data.StorageCompTemp >= _appSettings.StorageTempWarning)
+                    SendNotification("Storage", "Warning", $"Storage composite temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
             }
         }
 
-
+        // write sensordata to influxdb
         private async Task WriteMetricsToInflux(SensorData data)
         {
             var point = PointData.Measurement("pcmetrics")
@@ -460,27 +489,20 @@ namespace hwmonitor
             await _influxClient.WritePointAsync(point);
         }
 
-
-        private void addPoint(ObservableCollection<float> collection, float value)
-        {
-            collection.Add(value);
-            if (collection.Count > MaxPoints)
-                collection.Clear();
-        }
-
+        // cleanup when closing mainwindow
         protected override void OnClosed(EventArgs e)
         {
             _cts.Cancel();
-            _notifyIcon.Dispose();
             computer.Close();
             base.OnClosed(e);
         }
 
+        // add alertentry to its respective collection. returns if time since last alert is under wait time (independent per alert). remove oldest alert if over max alert count
         private void SendNotification(string hardwareType, string title, string message, ObservableCollection<AlertEntry> alerts)
         {
             if (_lastMetricNotifications.TryGetValue(hardwareType, out DateTime lastTime))
             {
-                if ((DateTime.UtcNow - lastTime).TotalSeconds < 10)
+                if ((DateTime.UtcNow - lastTime).TotalSeconds < AlertWaitSeconds)
                     return;
             }
 
@@ -498,16 +520,16 @@ namespace hwmonitor
                 alerts.RemoveAt(alerts.Count - 1);
         }
 
-
-
+        // load alert settings when opening the settings window. load new settings when saving settings
         private void OpenSettingsWindow(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow(_alertSettings.Clone());
-            settingsWindow.OnSettingsSaved += () => _alertSettings = AlertSettings.Load();
-            settingsWindow.Closed += (s, e) => _alertSettings = AlertSettings.Load();
+            var settingsWindow = new SettingsWindow(_appSettings.Clone());
+            settingsWindow.OnSettingsSaved += () => _appSettings = AppSettings.Load();
+            settingsWindow.Closed += (s, e) => _appSettings = AppSettings.Load();
             settingsWindow.Show();
         }
 
+        // methods to clear alerts collections
         private void ClearCpuAlerts(object sender, RoutedEventArgs e) => CpuAlerts.Clear();
         private void ClearGpuAlerts(object sender, RoutedEventArgs e) => GpuAlerts.Clear();
         private void ClearRamAlerts(object sender, RoutedEventArgs e) => RamAlerts.Clear();

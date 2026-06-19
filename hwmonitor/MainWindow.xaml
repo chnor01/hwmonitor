@@ -210,7 +210,7 @@
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -358,7 +358,7 @@
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -471,7 +471,7 @@
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -575,7 +575,7 @@
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionStats.SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
                             </DockPanel>
                             <Grid>
                                     <Grid.RowDefinitions>

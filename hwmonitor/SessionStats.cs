@@ -14,10 +14,6 @@ namespace hwmonitor
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
 
-        private Stopwatch _stopwatch = Stopwatch.StartNew();
-        public string SessionTime => _stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
-
-
         // Session tick count
         private int _tickCount = 0;
 
@@ -213,8 +209,6 @@ namespace hwmonitor
             OnPropertyChanged(nameof(StorageReadAvg));
             OnPropertyChanged(nameof(StorageWriteAvg));
             OnPropertyChanged(nameof(StorageTempAvg));
-
-            OnPropertyChanged(nameof(SessionTime));
 
             _tickCount += 1;
         }

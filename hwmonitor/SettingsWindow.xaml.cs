@@ -19,12 +19,12 @@ namespace hwmonitor
 {
     public partial class SettingsWindow : Window
     {
-        private AlertSettings _settings;
-        public AlertSettings Settings => _settings;
+        private AppSettings _settings;
+        public AppSettings Settings => _settings;
         public Action? OnSettingsSaved { get; set; }
 
 
-        public SettingsWindow(AlertSettings settings)
+        public SettingsWindow(AppSettings settings)
         {
             InitializeComponent();
             _settings = settings;
@@ -42,7 +42,7 @@ namespace hwmonitor
 
         private async void Undo_Click(object sender, RoutedEventArgs e)
         {
-            _settings = AlertSettings.Load();
+            _settings = AppSettings.Load();
             DataContext = _settings;
             CancelButton.Content = "Undone!";
             await Task.Delay(1500);

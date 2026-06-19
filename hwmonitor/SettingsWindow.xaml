@@ -8,19 +8,19 @@
         Title="Settings" Height="500" Width="400"
         Background="#121212" ResizeMode="NoResize">
 
-	<Window.Resources>
-		<Style TargetType="TextBlock">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontFamily" Value="Segoe UI"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
-		<Style TargetType="TextBox">
-			<Setter Property="Background" Value="#2A2A2A"/>
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="BorderBrush" Value="#444444"/>
-			<Setter Property="Padding" Value="4"/>
-			<Setter Property="Width" Value="60"/>
-		</Style>
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#444444"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Width" Value="60"/>
+        </Style>
         <Style TargetType="ScrollBar">
             <Setter Property="Width" Value="6"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -45,165 +45,305 @@
             </Setter>
         </Style>
         <Style TargetType="CheckBox">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="0,0,8,0"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="CheckBox">
-						<Grid>
-							<Border x:Name="Border" Width="16" Height="16"
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Border x:Name="Border" Width="16" Height="16"
 									CornerRadius="4"
 									Background="Transparent"
 									BorderBrush="#444444"
 									BorderThickness="2"/>
-							<TextBlock x:Name="Checkmark" Text="✓"
+                            <TextBlock x:Name="Checkmark" Text="✓"
 									   HorizontalAlignment="Center"
 									   VerticalAlignment="Center"
 									   FontSize="11"
 									   FontWeight="Bold"
 									   Foreground="#4A90D9"
 									   Visibility="Collapsed"/>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsChecked" Value="True">
-								<Setter TargetName="Border" Property="BorderBrush" Value="#4A90D9"/>
-								<Setter TargetName="Border" Property="Background" Value="#1A3A5C"/>
-								<Setter TargetName="Checkmark" Property="Visibility" Value="Visible"/>
-							</Trigger>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter TargetName="Border" Property="BorderBrush" Value="#4A90D9"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</Window.Resources>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#4A90D9"/>
+                                <Setter TargetName="Border" Property="Background" Value="#1A3A5C"/>
+                                <Setter TargetName="Checkmark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#4A90D9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border"
+                        Background="#1E1E1E"
+                        Padding="16,8" 
+                        Margin="3">
+                            <ContentPresenter ContentSource="Header" 
+                                      TextBlock.Foreground="#888888"
+                                      TextBlock.FontFamily="Segoe UI"
+                                      TextBlock.FontWeight="SemiBold"
+                                      TextBlock.FontSize="13"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#2A2A2A"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,2"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#4A90D9"/>
+                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#252525"/>
+                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-	<DockPanel Margin="10">
-		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="SaveButton" Content="Save" Click="Save_Click" Width="80" Background="#4A90D9" Foreground="White" BorderBrush="Transparent" Margin="0,0,8,0"/>
-            <Button x:Name="CancelButton" Content="Undo" Click="Undo_Click" Width="80" Background="#2A2A2A" Foreground="White" BorderBrush="Transparent"/>
-		</StackPanel>
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1"
+                                                  Data="M 0 0 L 4 4 L 8 0"
+                                                  Stroke="#F0F0F0"
+                                                  StrokeThickness="1.5"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
 
-		<ScrollViewer Padding="0,0,10,0">
-			<StackPanel>
-				<Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30">
-                        </RowDefinition>
-                    </Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="68"/>
-						<ColumnDefinition Width="68"/>
-					</Grid.ColumnDefinitions>
-					<TextBlock Grid.Column="0" Text="Notifications for Metrics"  FontWeight="Bold" Foreground="#C7C1C1"/>
-					<TextBlock Grid.Column="1" Text="Warning" HorizontalAlignment="Center" Foreground="#FFA500"></TextBlock>
-					<TextBlock Grid.Column="2" Text="Critical" HorizontalAlignment="Center" Foreground="#FF4444"></TextBlock>
-				</Grid>
+                            <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          Margin="8,0,24,0"
+                                          VerticalAlignment="Center"
+                                          IsHitTestVisible="False"
+                                          TextElement.Foreground="#F0F0F0"/>
 
-				<TextBlock Text="CPU" FontSize="14" FontWeight="Bold" Foreground="#4A90D9" Margin="0,0,0,8"/>
-				<Grid Margin="0,0,0,10">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="30"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="36"/>
-						<RowDefinition Height="36"/>
-						<RowDefinition Height="36"/>
-					</Grid.RowDefinitions>
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               AllowsTransparency="True">
+                                <Border Background="#1E1E1E"
+                                    BorderBrush="#555555"
+                                    BorderThickness="1"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-					<CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding CpuTempAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="0" Grid.Column="1" Text="Temp (°C)"/>
-					<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding CpuTempWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding CpuTempCritical}" Margin="4,0"/>
-
-					<CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding CpuLoadAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="1" Grid.Column="1" Text="Load (%)"/>
-					<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding CpuLoadWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="1" Grid.Column="3" Text="{Binding CpuLoadCritical}" Margin="4,0"/>
-
-					<CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding CpuPowerAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="2" Grid.Column="1" Text="Power (W)"/>
-					<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding CpuPowerWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="2" Grid.Column="3" Text="{Binding CpuPowerCritical}" Margin="4,0"/>
-				</Grid>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3A3A"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#2D5A8E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
 
-				<TextBlock Text="GPU" FontSize="14" FontWeight="Bold"
+
+
+    </Window.Resources>
+
+    <Grid Background="#121212">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0" Background="#121212" BorderBrush="Transparent">
+            <TabItem Header="Alerts">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30">
+                                </RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="68"/>
+                                <ColumnDefinition Width="68"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Notifications for Metrics"  FontWeight="Bold" Foreground="#C7C1C1"/>
+                            <TextBlock Grid.Column="1" Text="Warning" HorizontalAlignment="Center" Foreground="#FFA500"></TextBlock>
+                            <TextBlock Grid.Column="2" Text="Critical" HorizontalAlignment="Center" Foreground="#FF4444"></TextBlock>
+                        </Grid>
+
+                        <TextBlock Text="CPU" FontSize="14" FontWeight="Bold" Foreground="#4A90D9" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36"/>
+                                <RowDefinition Height="36"/>
+                                <RowDefinition Height="36"/>
+                            </Grid.RowDefinitions>
+
+                            <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding CpuTempAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Temp (°C)"/>
+                            <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding CpuTempWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding CpuTempCritical}" Margin="4,0"/>
+
+                            <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding CpuLoadAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Load (%)"/>
+                            <TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding CpuLoadWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="1" Grid.Column="3" Text="{Binding CpuLoadCritical}" Margin="4,0"/>
+
+                            <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding CpuPowerAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Power (W)"/>
+                            <TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding CpuPowerWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="2" Grid.Column="3" Text="{Binding CpuPowerCritical}" Margin="4,0"/>
+                        </Grid>
+
+
+                        <TextBlock Text="GPU" FontSize="14" FontWeight="Bold"
                            Foreground="#9B59B6" Margin="0,0,0,8"/>
-				<Grid Margin="0,0,0,16">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="30"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="36"/>
-						<RowDefinition Height="36"/>
-						<RowDefinition Height="36"/>
-					</Grid.RowDefinitions>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36"/>
+                                <RowDefinition Height="36"/>
+                                <RowDefinition Height="36"/>
+                            </Grid.RowDefinitions>
 
-					<CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding GpuTempAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="0" Grid.Column="1" Text="Temp (°C)"/>
-					<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding GpuTempWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding GpuTempCritical}" Margin="4,0"/>
+                            <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding GpuTempAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Temp (°C)"/>
+                            <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding GpuTempWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding GpuTempCritical}" Margin="4,0"/>
 
-					<CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding GpuLoadAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="1" Grid.Column="1" Text="Load (%)"/>
-					<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding GpuLoadWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="1" Grid.Column="3" Text="{Binding GpuLoadCritical}" Margin="4,0"/>
+                            <CheckBox  Grid.Row="1" Grid.Column="0" IsChecked="{Binding GpuLoadAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Load (%)"/>
+                            <TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding GpuLoadWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="1" Grid.Column="3" Text="{Binding GpuLoadCritical}" Margin="4,0"/>
 
-					<CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding GpuPowerAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="2" Grid.Column="1" Text="Power (W)"/>
-					<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding GpuPowerWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="2" Grid.Column="3" Text="{Binding GpuPowerCritical}" Margin="4,0"/>
-				</Grid>
+                            <CheckBox  Grid.Row="2" Grid.Column="0" IsChecked="{Binding GpuPowerAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Power (W)"/>
+                            <TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding GpuPowerWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="2" Grid.Column="3" Text="{Binding GpuPowerCritical}" Margin="4,0"/>
+                        </Grid>
 
 
-				<TextBlock Text="RAM" FontSize="14" FontWeight="Bold"
+                        <TextBlock Text="RAM" FontSize="14" FontWeight="Bold"
                            Foreground="#27AE60" Margin="0,0,0,8"/>
-				<Grid Margin="0,0,0,16">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="30"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="36"/>
-					</Grid.RowDefinitions>
-					<CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding RamAlertEnabled}" Margin="0,10"/>
-					<TextBlock Grid.Row="0" Grid.Column="1" Text="Usage (%)"/>
-					<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding RamWarning}"  Margin="4,0"/>
-					<TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding RamCritical}" Margin="4,0"/>
-				</Grid>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding RamAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Usage (%)"/>
+                            <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding RamWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding RamCritical}" Margin="4,0"/>
+                        </Grid>
 
-                <TextBlock Text="Storage" FontSize="14" FontWeight="Bold"
+                        <TextBlock Text="Storage" FontSize="14" FontWeight="Bold"
            Foreground="#db6e0f" Margin="0,0,0,8"/>
-                <Grid Margin="0,0,0,16">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="36"/>
-                    </Grid.RowDefinitions>
-                    <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding StorageTempAlertEnabled}" Margin="0,10"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Composite Temp (°C)"/>
-                    <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding StorageTempWarning}"  Margin="4,0"/>
-                    <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding StorageTempCritical}" Margin="4,0"/>
-                </Grid>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox  Grid.Row="0" Grid.Column="0" IsChecked="{Binding StorageTempAlertEnabled}" Margin="0,10"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Composite Temp (°C)"/>
+                            <TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding StorageTempWarning}"  Margin="4,0"/>
+                            <TextBox   Grid.Row="0" Grid.Column="3" Text="{Binding StorageTempCritical}" Margin="4,0"/>
+                        </Grid>
 
+                    </StackPanel>
+                </ScrollViewer>
+
+            </TabItem>
+            <TabItem Header="General">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Sensors" FontSize="14" FontWeight="Bold"
+                           Foreground="#FF0000" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Sensor Polling Interval (ms)"/>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding PollingIntervalMsOptions}" SelectedItem="{Binding PollingIntervalMs}"/>
+
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        <Border Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="SaveButton" Content="Save" Click="Save_Click" Width="80" Background="#4A90D9" Foreground="White" BorderBrush="Transparent" Margin="0,0,8,0"/>
+                <Button x:Name="CancelButton" Content="Undo" Click="Undo_Click" Width="80" Background="#2A2A2A" Foreground="White" BorderBrush="Transparent"/>
             </StackPanel>
-		</ScrollViewer>
-	</DockPanel>
-
+        </Border>
+    </Grid>
 </Window>
