@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -63,6 +63,7 @@ namespace hwmonitor
         // clone values in case user cancels saving new settings
         public AppSettings Clone() => new AppSettings
         {
+            AlertCooldownSeconds = AlertCooldownSeconds,
             PollingIntervalMs  = PollingIntervalMs,
             CpuTempWarning = CpuTempWarning,
             CpuTempCritical = CpuTempCritical,
