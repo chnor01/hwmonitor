@@ -13,10 +13,17 @@ namespace hwmonitor
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
+        // dropdown options for polling interval
         public List<int> PollingIntervalMsOptions { get; } = new() { 100, 250, 500, 1000 };
 
         private int _pollingIntervalMs = 1000;
         public int PollingIntervalMs { get => _pollingIntervalMs; set { _pollingIntervalMs = value; OnPropertyChanged(nameof(PollingIntervalMs)); } }
+
+        // dropdown options for alert cooldown
+        public List<int> AlertCooldownSecondsOptions { get; } = new() { 5, 10, 15, 20 };
+
+        private int _alertCooldownSeconds = 10;
+        public int AlertCooldownSeconds { get => _alertCooldownSeconds; set { _alertCooldownSeconds = value; OnPropertyChanged(nameof(AlertCooldownSeconds)); } }
 
 
         // values for warning/critical thresholds for each metric

@@ -20,6 +20,8 @@
             <Setter Property="BorderBrush" Value="#444444"/>
             <Setter Property="Padding" Value="4"/>
             <Setter Property="Width" Value="60"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
         </Style>
         <Style TargetType="ScrollBar">
             <Setter Property="Width" Value="6"/>
@@ -110,11 +112,12 @@
         </Style>
 
         <Style TargetType="ComboBox">
-            <Setter Property="Height" Value="28"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="Background" Value="#1E1E1E"/>
             <Setter Property="Foreground" Value="#F0F0F0"/>
             <Setter Property="BorderBrush" Value="#555555"/>
             <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -149,6 +152,7 @@
                                           ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                           Margin="8,0,24,0"
                                           VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
                                           IsHitTestVisible="False"
                                           TextElement.Foreground="#F0F0F0"/>
 
@@ -183,10 +187,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
-
-
-
+        
     </Window.Resources>
 
     <Grid Background="#121212">
@@ -209,7 +210,7 @@
                                 <ColumnDefinition Width="68"/>
                                 <ColumnDefinition Width="68"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Notifications for Metrics"  FontWeight="Bold" Foreground="#C7C1C1"/>
+                            <TextBlock Grid.Column="0" Text="Alert Thresholds"  FontWeight="Bold" Foreground="#C7C1C1"/>
                             <TextBlock Grid.Column="1" Text="Warning" HorizontalAlignment="Center" Foreground="#FFA500"></TextBlock>
                             <TextBlock Grid.Column="2" Text="Critical" HorizontalAlignment="Center" Foreground="#FF4444"></TextBlock>
                         </Grid>
@@ -320,8 +321,7 @@
             <TabItem Header="General">
                 <ScrollViewer>
                     <StackPanel Margin="10">
-                        <TextBlock Text="Sensors" FontSize="14" FontWeight="Bold"
-                           Foreground="#FF0000" Margin="0,0,0,8"/>
+                        <TextBlock Text="Sensors" FontSize="14" FontWeight="Bold" Foreground="#C7C1C1" Margin="0,0,0,8"/>
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -331,9 +331,22 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Sensor Polling Interval (ms)"/>
+                            <TextBlock Grid.Column="0" Text="Sensor Polling Interval (milliseconds)"/>
                             <ComboBox Grid.Column="1" ItemsSource="{Binding PollingIntervalMsOptions}" SelectedItem="{Binding PollingIntervalMs}"/>
+                        </Grid>
 
+                        <TextBlock Text="Alerts" FontSize="14" FontWeight="Bold" Foreground="#C7C1C1" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Alert Cooldown (seconds)"/>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding AlertCooldownSecondsOptions}" SelectedItem="{Binding AlertCooldownSeconds}"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

@@ -153,9 +153,6 @@ namespace hwmonitor
         // max amount of alerts per hardware type
         private const int MaxAlerts = 20;
 
-        // time in seconds between each alert
-        private const int AlertWaitSeconds = 10;
-
         // instance to fetch the metrics
         Computer computer = new Computer
         {
@@ -502,7 +499,7 @@ namespace hwmonitor
         {
             if (_lastMetricNotifications.TryGetValue(hardwareType, out DateTime lastTime))
             {
-                if ((DateTime.UtcNow - lastTime).TotalSeconds < AlertWaitSeconds)
+                if ((DateTime.UtcNow - lastTime).TotalSeconds < _appSettings.AlertCooldownSeconds)
                     return;
             }
 
