@@ -210,7 +210,7 @@
                                 <ColumnDefinition Width="68"/>
                                 <ColumnDefinition Width="68"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Alert Thresholds"  FontWeight="Bold" Foreground="#C7C1C1"/>
+                            <TextBlock Grid.Column="0" Text="Alert Thresholds" FontSize="14" FontWeight="Bold" Foreground="#C7C1C1"/>
                             <TextBlock Grid.Column="1" Text="Warning" HorizontalAlignment="Center" Foreground="#FFA500"></TextBlock>
                             <TextBlock Grid.Column="2" Text="Critical" HorizontalAlignment="Center" Foreground="#FF4444"></TextBlock>
                         </Grid>

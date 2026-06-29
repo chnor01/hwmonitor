@@ -195,8 +195,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel Margin="0,3">
-                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70"/>
-                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70"/>
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="60"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="60"/>
                                                 <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
                                             </DockPanel>
                                         </DataTemplate>
@@ -208,9 +208,9 @@
 
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <Button Content="Reset" Click="ResetCpuStats" DockPanel.Dock="Right" Padding="8" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -343,8 +343,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel Margin="0,3">
-                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70"/>
-                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70"/>
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="60"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="60"/>
                                                 <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
                                             </DockPanel>
                                         </DataTemplate>
@@ -356,9 +356,9 @@
 
                     <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <Button Content="Reset" Click="ResetGpuStats" DockPanel.Dock="Right" Padding="8" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -457,8 +457,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel Margin="0,3">
-                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70"/>
-                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70"/>
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="60"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="60"/>
                                                 <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
                                             </DockPanel>
                                         </DataTemplate>
@@ -469,9 +469,9 @@
                     </Border>
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <Button Content="Reset" Click="ResetRamStats" DockPanel.Dock="Right" Padding="8" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -561,8 +561,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel Margin="0,3">
-                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="70"/>
-                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="70"/>
+                                                <TextBlock Text="{Binding Time}" Foreground="#555555" Width="60"/>
+                                                <TextBlock Text="{Binding Title}" Foreground="{Binding Color}" Width="60"/>
                                                 <TextBlock Text="{Binding Message}" Foreground="#AAAAAA" HorizontalAlignment="Left"/>
                                             </DockPanel>
                                         </DataTemplate>
@@ -573,9 +573,9 @@
                     </Border>
                     <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#1A1A1A" Margin="8,0,8,8" CornerRadius="10" Padding="12">
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                                 <TextBlock Text="Current Session" FontSize="18" FontWeight="SemiBold" Foreground="#888888" HorizontalAlignment="Left"/>
-                                <TextBlock Text="{Binding SessionTime}" Background="#333333" Foreground="#999999" FontSize="18" HorizontalAlignment="Left" Margin="8,0,0,0" Padding="6"/>
+                                <Button Content="Reset" Click="ResetStorageStats" DockPanel.Dock="Right" Padding="8" Foreground="#888888" Background="Transparent" BorderBrush="#444444"></Button>
                             </DockPanel>
                             <Grid>
                                     <Grid.RowDefinitions>

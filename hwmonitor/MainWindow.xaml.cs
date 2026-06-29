@@ -2,16 +2,15 @@
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WPF;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
-using InfluxDB3.Client;
-using InfluxDB3.Client.Write;
-using System.Text.Json;
-using System.IO;
 
 
 namespace hwmonitor
@@ -92,6 +91,11 @@ namespace hwmonitor
         public ISeries[] StorageReadRateSeries { get; set; }
         public ISeries[] StorageWriteRateSeries { get; set; }
 
+        private SKColor CpuColor = SKColors.DeepSkyBlue;
+        private SKColor GpuColor = SKColors.MediumPurple;
+        private SKColor RamColor = SKColors.MediumSpringGreen;
+        private SKColor StorageColor = SKColors.Orange;
+
         // alert collections
         public ObservableCollection<AlertEntry> CpuAlerts { get; set; } = new();
         public ObservableCollection<AlertEntry> GpuAlerts { get; set; } = new();
@@ -137,13 +141,7 @@ namespace hwmonitor
         private SessionStats _sessionStats = new SessionStats();
         public SessionStats SessionStats => _sessionStats;
 
-        private DispatcherTimer _sessionTimer;
-        private DateTime _sessionStart;
-        public string SessionTime => (DateTime.Now - _sessionStart).ToString(@"hh\:mm\:ss");
-
         private Dictionary<string, DateTime> _lastMetricNotifications = new Dictionary<string, DateTime>();
-
-        private InfluxDBClient _influxClient;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -154,7 +152,7 @@ namespace hwmonitor
         private const int MaxAlerts = 20;
 
         // instance to fetch the metrics
-        Computer computer = new Computer
+        Computer _computer = new Computer
         {
             IsCpuEnabled = true,
             IsGpuEnabled = true,
@@ -168,97 +166,55 @@ namespace hwmonitor
         public MainWindow()
         {
             InitializeComponent();
+            InitializeChartSeries();
             DataContext = this;
 
-            // env variables for influxdb
-            var host = Environment.GetEnvironmentVariable("INFLUXDB3_HOST")
-                ?? throw new InvalidOperationException("INFLUXDB3_HOST is not set");
-            var token = Environment.GetEnvironmentVariable("INFLUXDB3_AUTH_TOKEN")
-                ?? throw new InvalidOperationException("INFLUXDB3_AUTH_TOKEN is not set");
-            var database = Environment.GetEnvironmentVariable("INFLUXDB3_DATABASE");
-
-            _influxClient = new InfluxDBClient(host: host, token: token, database: database);
-
-            StartSessionTimer();
             _appSettings = AppSettings.Load();
-            computer.Open();
-            _hardwareInfo = HardwareInfo.Load(computer);
+            _computer.Open();
+            _hardwareInfo = HardwareInfo.Load(_computer);
             Task.Run(() => MetricsLoop(_cts.Token));
 
-            CpuLoadSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _cpuLoadTotal, Name = "CPU Load", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
-            };
-
-            CpuTempSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _cpuTemp, Name = "CPU Temp", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
-            };
-
-            CpuPowerSeries = new ISeries[]
-            {
-            new LineSeries<float> { Values = _cpuPower, Name = "CPU Power", Fill = new SolidColorPaint(SKColors.DeepSkyBlue.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}W" }
-            };
-
-            GpuLoadSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuCoreLoad, Name = "GPU Core Load", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1 }
-            };
-
-            GpuCoreTempSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuCoreTemp,    Name = "GPU Core Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
-            };
-
-            GpuMemoryTempSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuMemoryTemp,  Name = "GPU Memory Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
-            };
-
-            GpuHotspotTempSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuHotspotTemp, Name = "GPU Hotspot Temp", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
-            };
-
-            GpuPowerSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuPower, Name = "GPU Power", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1  }
-            };
-
-            GpuMemoryUsageSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _gpuMemoryUsed, Name = "GPU Memory", Fill = new SolidColorPaint(SKColors.MediumPurple.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumPurple) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}%" }
-            };
-
-            RamSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _ramUsedPercentage, Name = "RAM Usage", Fill = new SolidColorPaint(SKColors.MediumSpringGreen.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.MediumSpringGreen) { StrokeThickness = 2 }, LineSmoothness = 1 , YToolTipLabelFormatter = p => $"{p.Model:F1}%"}
-            };
-
-            StorageCompTempSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _storageCompTemp, Name = "Storage Composite Temp", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}°C"}
-            };
-
-            StorageReadRateSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _storageReadRate, Name = "Storage Read Rate", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}MB/s"}
-            };
-
-            StorageWriteRateSeries = new ISeries[]
-            {
-                new LineSeries<float> { Values = _storageWriteRate, Name = "Storage Write Rate", Fill = new SolidColorPaint(SKColors.Orange.WithAlpha(75)), GeometrySize = 0, Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 }, LineSmoothness = 1, YToolTipLabelFormatter = p => $"{p.Model:F1}MB/s"}
-            };
-
         }
 
-        private void StartSessionTimer()
+        // create a line chart
+        private static ISeries[] CreateLineSeries(ObservableCollection<float> values, string name, SKColor color, string tooltipUnit)
         {
-            _sessionStart = DateTime.Now;
-            _sessionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            _sessionTimer.Tick += (s, e) => OnPropertyChanged(nameof(SessionTime));
-            _sessionTimer.Start();
+            return new ISeries[]
+            {
+                new LineSeries<float>
+                {
+                    Values = values,
+                    Name = name,
+                    Fill = new SolidColorPaint(color.WithAlpha(75)),
+                    Stroke = new SolidColorPaint(color) { StrokeThickness = 2 },
+                    GeometrySize = 0,
+                    LineSmoothness = 1,
+                    YToolTipLabelFormatter = p => $"{p.Model:F1}{tooltipUnit}",
+                }
+            };
         }
+
+        // create line charts for all metrics
+        private void InitializeChartSeries()
+        {
+            CpuLoadSeries = CreateLineSeries(_cpuLoadTotal, "CPU Load", CpuColor, "%");
+            CpuTempSeries = CreateLineSeries(_cpuTemp, "CPU Temp", CpuColor, "°C");
+            CpuPowerSeries = CreateLineSeries(_cpuPower, "CPU Power", CpuColor, "W");
+
+            GpuLoadSeries = CreateLineSeries(_gpuCoreLoad, "GPU Core Load", GpuColor, "%");
+            GpuCoreTempSeries = CreateLineSeries(_gpuCoreTemp, "GPU Core Temp", GpuColor, "°C");
+            GpuMemoryTempSeries = CreateLineSeries(_gpuMemoryTemp, "GPU Memory Temp", GpuColor, "°C");
+            GpuHotspotTempSeries = CreateLineSeries(_gpuHotspotTemp, "GPU Hotspot Temp", GpuColor, "°C");
+            GpuPowerSeries = CreateLineSeries(_gpuPower, "GPU Power", GpuColor, "W");
+            GpuMemoryUsageSeries = CreateLineSeries(_gpuMemoryUsed, "GPU Memory", GpuColor, "%");
+
+            RamSeries = CreateLineSeries(_ramUsedPercentage, "RAM Usage", RamColor, "%");
+
+            StorageCompTempSeries = CreateLineSeries(_storageCompTemp, "Storage Composite Temp", StorageColor, "°C");
+            StorageReadRateSeries = CreateLineSeries(_storageReadRate, "Storage Read Rate", StorageColor, "MB/s");
+            StorageWriteRateSeries = CreateLineSeries(_storageWriteRate, "Storage Write Rate", StorageColor, "MB/s");
+        }
+
 
         // periodically fetch sensordata and update the mainwindow UI
         private async Task MetricsLoop(CancellationToken token)
@@ -275,7 +231,7 @@ namespace hwmonitor
         private SensorData ReadSensors()
         {
             var data = new SensorData();
-            foreach (IHardware hardware in computer.Hardware)
+            foreach (IHardware hardware in _computer.Hardware)
             {
                 if (hardware.Name.Contains("Virtual") || hardware.Name.Contains("Graphics"))
                     continue;
@@ -349,29 +305,29 @@ namespace hwmonitor
         }
 
         // add a sensordata point to its collection
-        private void addPoint(ObservableCollection<float> collection, float value)
+        private void AddPoint(ObservableCollection<float> collection, float value)
         {
             collection.Add(value);
             if (collection.Count > MaxPoints)
-                collection.Clear();
+                collection.RemoveAt(0);
         }
 
         // add all fetched sensordata to their respective collection and update the metrics UI text strings
         private void UpdateUI(SensorData data)
         {
-            addPoint(_cpuLoadTotal, data.CpuLoadTotal);
-            addPoint(_cpuTemp, data.CpuTemp);
-            addPoint(_cpuPower, data.CpuPower);
+            AddPoint(_cpuLoadTotal, data.CpuLoadTotal);
+            AddPoint(_cpuTemp, data.CpuTemp);
+            AddPoint(_cpuPower, data.CpuPower);
             CpuLoadText = $"{data.CpuLoadTotal:F1}%";
             CpuTempText = $"{data.CpuTemp:F1}°C";
             CpuPowerText = $"{data.CpuPower:F1}W";
 
-            addPoint(_gpuCoreLoad, data.GpuCoreLoad);
-            addPoint(_gpuCoreTemp, data.GpuCoreTemp);
-            addPoint(_gpuMemoryTemp, data.GpuMemoryTemp);
-            addPoint(_gpuHotspotTemp, data.GpuHotspotTemp);
-            addPoint(_gpuPower, data.GpuPower);
-            addPoint(_gpuMemoryUsed, data.GpuMemoryPercent);
+            AddPoint(_gpuCoreLoad, data.GpuCoreLoad);
+            AddPoint(_gpuCoreTemp, data.GpuCoreTemp);
+            AddPoint(_gpuMemoryTemp, data.GpuMemoryTemp);
+            AddPoint(_gpuHotspotTemp, data.GpuHotspotTemp);
+            AddPoint(_gpuPower, data.GpuPower);
+            AddPoint(_gpuMemoryUsed, data.GpuMemoryPercent);
             GpuCoreLoadText = $"{data.GpuCoreLoad:F1}%";
             GpuCoreTempText = $"{data.GpuCoreTemp:F1}°C";
             GpuMemoryTempText = $"{data.GpuMemoryTemp:F1}°C";
@@ -379,12 +335,12 @@ namespace hwmonitor
             GpuPowerText = $"{data.GpuPower:F1}W";
             GpuMemoryUsedGBText = $"{data.GpuMemoryUsedMB / 1024:F2}/{data.GpuMemoryTotalMB / 1024:F0}GB";
 
-            addPoint(_ramUsedPercentage, data.RamPercent);
+            AddPoint(_ramUsedPercentage, data.RamPercent);
             RamUsedGBText = $"{data.RamUsedGB:F1}/{data.RamUsedGB + data.RamAvailGB:F0}GB";
 
-            addPoint(_storageCompTemp, data.StorageCompTemp);
-            addPoint(_storageReadRate, data.StorageReadRate);
-            addPoint(_storageWriteRate, data.StorageWriteRate);
+            AddPoint(_storageCompTemp, data.StorageCompTemp);
+            AddPoint(_storageReadRate, data.StorageReadRate);
+            AddPoint(_storageWriteRate, data.StorageWriteRate);
             StorageCompTempText = $"{data.StorageCompTemp:F1}°C";
             StorageReadRateText = $"{data.StorageReadRate:F1}MB/s";
             StorageWriteRateText = $"{data.StorageWriteRate:F1}MB/s";
@@ -392,7 +348,6 @@ namespace hwmonitor
             _sessionStats.Update(data);
             CheckAlerts(data);
 
-            //_ = WriteMetricsToInflux(data);
 
         }
 
@@ -457,40 +412,18 @@ namespace hwmonitor
             if (_appSettings.StorageTempAlertEnabled)
             {
                 if (data.StorageCompTemp >= _appSettings.StorageTempCritical)
-                    SendNotification("Storage", "Critical", $"Storage composite temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                    SendNotification("Storage", "Critical", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
                 else if (data.StorageCompTemp >= _appSettings.StorageTempWarning)
-                    SendNotification("Storage", "Warning", $"Storage composite temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
+                    SendNotification("Storage", "Warning", $"Storage temperature is {data.StorageCompTemp:F1}°C", StorageAlerts);
             }
         }
 
-        // write sensordata to influxdb
-        private async Task WriteMetricsToInflux(SensorData data)
-        {
-            var point = PointData.Measurement("pcmetrics")
-                .SetTag("host", Environment.MachineName)
-                .SetField("cpu_load", data.CpuLoadTotal)
-                .SetField("cpu_temp", data.CpuTemp)
-                .SetField("cpu_power", data.CpuPower)
-                .SetField("gpu_load", data.GpuCoreLoad)
-                .SetField("gpu_core_temp", data.GpuCoreTemp)
-                .SetField("gpu_memory_temp", data.GpuMemoryTemp)
-                .SetField("gpu_hotspot_temp", data.GpuHotspotTemp)
-                .SetField("gpu_power", data.GpuPower)
-                .SetField("gpu_memory_percent", data.GpuMemoryPercent)
-                .SetField("ram_percent", data.RamPercent)
-                .SetField("storage_temp", data.StorageCompTemp)
-                .SetField("storage_read", data.StorageReadRate)
-                .SetField("storage_write", data.StorageWriteRate)
-                .SetTimestamp(DateTime.UtcNow);
-
-            await _influxClient.WritePointAsync(point);
-        }
 
         // cleanup when closing mainwindow
         protected override void OnClosed(EventArgs e)
         {
             _cts.Cancel();
-            computer.Close();
+            _computer.Close();
             base.OnClosed(e);
         }
 
@@ -531,6 +464,12 @@ namespace hwmonitor
         private void ClearGpuAlerts(object sender, RoutedEventArgs e) => GpuAlerts.Clear();
         private void ClearRamAlerts(object sender, RoutedEventArgs e) => RamAlerts.Clear();
         private void ClearStorageAlerts(object sender, RoutedEventArgs e) => StorageAlerts.Clear();
+
+        // methods to reset session stats for each hardware type
+        private void ResetCpuStats(object sender, RoutedEventArgs e) => _sessionStats.ResetCpuStats();
+        private void ResetGpuStats(object sender, RoutedEventArgs e) => _sessionStats.ResetGpuStats();
+        private void ResetRamStats(object sender, RoutedEventArgs e) => _sessionStats.ResetRamStats();
+        private void ResetStorageStats(object sender, RoutedEventArgs e) => _sessionStats.ResetStorageStats();
 
 
     }
